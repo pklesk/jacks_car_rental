@@ -27,7 +27,7 @@ ACTIONS = np.arange(-MAX_CARS_MOVED, MAX_CARS_MOVED + 1, dtype=np.int16)
 REWARDS = np.arange(2 * MAX_CARS_AT_LOC + 1) * REWARD_CAR_RENTED
 LAMBDAS = [2.0, 3.0, 4.0]
 MAX_N = MAX_CARS_AT_LOC
-POISSON_DISTRS = {l: np.array([l**n * np.exp(-l) / np.math.factorial(n) for n in range(MAX_N + 1)]) for l in LAMBDAS}
+POISSON_DISTRS = {l: np.array([l**n * np.exp(-l) / math.factorial(n) for n in range(MAX_N + 1)]) for l in LAMBDAS}
 for k in POISSON_DISTRS.keys():
     distr = POISSON_DISTRS[k]
     distr[-1] = 1.0 - np.sum(distr[:-1])
