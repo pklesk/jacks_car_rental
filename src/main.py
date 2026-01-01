@@ -28,7 +28,7 @@ if __name__ == "__main__":
         pickle_objects(jcr.MDP_PATH, [P])
     print(f"JOINT DISTRIBUTION -> SHAPE: {P.shape}, TYPE: {P.dtype}")    
     # V, policy = jcr.jcr_pi_contraction_numpy(P, plots=False)            
-    V, policy, i_eval_total, time_ = jcr.jcr_pi_contraction_cuda_atomicmax(P, plots=False)
+    V, policy, i_eval_total, time_ = jcr.jcr_pi_contraction_cuda_atomicmaxglosten(P, plots=False)
     
-    jcr.plot_value_and_policy_jcr(V, policy)
+    # jcr.plot_value_and_policy_jcr(V, policy)
     print("JACK'S CAR RENTAL DONE.")
