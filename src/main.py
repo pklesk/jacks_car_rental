@@ -26,7 +26,8 @@ if __name__ == "__main__":
     else:
         P = jcr.mdp_joint_distr_jcr()
         pickle_objects(jcr.MDP_PATH, [P])
-    print(f"JOINT DISTRIBUTION -> SHAPE: {P.shape}, TYPE: {P.dtype}")    
+    print(f"JOINT DISTRIBUTION -> SHAPE: {P.shape}, TYPE: {P.dtype}")
+    P_new = P.transpose(2, 3, 0, 1).copy()    
     # V, policy = jcr.jcr_pi_contraction_numpy(P, plots=False)            
     V, policy, i_eval_total, time_ = jcr.jcr_pi_contraction_cuda_atomicmaxglosten(P, plots=False)
     

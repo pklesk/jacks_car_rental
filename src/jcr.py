@@ -229,7 +229,7 @@ def jcr_pi_contraction_cuda_atomicmaxglosten(P, states=STATES, actions=ACTIONS, 
             t1_eval = time.time()
             d = np.zeros(1, dtype=np.float32)
             dev_d = cuda.to_device(d)            
-            jcr_pi_contraction_cuda_atomicmax_eval[bpg, tpb](dev_P, dev_V_in, dev_V_out, dev_policy, reward_car_moved, gamma, dev_d)            
+            jcr_pi_contraction_cuda_atomicmaxglosten_eval[bpg, tpb](dev_P, dev_V_in, dev_V_out, dev_policy, reward_car_moved, gamma, dev_d)            
             d = dev_d.copy_to_host()[0]
             cuda.synchronize()
             t2_eval = time.time()
@@ -245,7 +245,7 @@ def jcr_pi_contraction_cuda_atomicmaxglosten(P, states=STATES, actions=ACTIONS, 
         t1_impr = time.time()
         policy_stable = np.ones(1, dtype=np.int32)
         dev_policy_stable = cuda.to_device(policy_stable)            
-        jcr_pi_contraction_cuda_atomicmax_improve[bpg, tpb](dev_P, dev_V_in, dev_policy, reward_car_moved, gamma, dev_policy_stable)            
+        jcr_pi_contraction_cuda_atomicmaxglosten_improve[bpg, tpb](dev_P, dev_V_in, dev_policy, reward_car_moved, gamma, dev_policy_stable)            
         policy_stable = dev_policy_stable.copy_to_host()[0]
         policy_stable = True if policy_stable == 1 else False
         cuda.synchronize()
@@ -289,6 +289,7 @@ def jcr_pi_contraction_cuda_atomicmaxglosten_eval(P, V_in, V_out, policy, reward
         for _ in range(nspt):
             if next_state_index < n_states:            
                 shared_v_new[t] += P[r_index, next_state_index, s_index, a_index] * (r + gamma * V_in[next_state_index]) 
+                # shared_v_new[t] += P[s_index, a_index, r_index, next_state_index] * (r + gamma * V_in[next_state_index])
             cuda.syncthreads()
             next_state_index += tpb                        
         stride = tpb >> 1
@@ -329,6 +330,7 @@ def jcr_pi_contraction_cuda_atomicmaxglosten_improve(P, V, policy, reward_car_mo
             for _ in range(nspt):
                 if next_state_index < n_states:            
                     shared_q_new[t] += P[r_index, next_state_index, s_index, a_index] * (r + gamma * V[next_state_index]) 
+                    # shared_q_new[t] += P[s_index, a_index, r_index, next_state_index] * (r + gamma * V[next_state_index])
                 cuda.syncthreads()
                 next_state_index += tpb                        
             stride = tpb >> 1
