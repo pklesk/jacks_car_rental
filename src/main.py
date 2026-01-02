@@ -23,13 +23,14 @@ if __name__ == "__main__":
     print("JACK'S CAR RENTAL STARTING...")
     if UNPICKLE_MDP:
         [P] = unpickle_objects(jcr.MDP_PATH)
+        # P_new = P.transpose(2, 3, 0, 1).copy()
+        # pickle_objects(jcr.MDP_PATH, [P_new])
     else:
         P = jcr.mdp_joint_distr_jcr()
         pickle_objects(jcr.MDP_PATH, [P])
-    print(f"JOINT DISTRIBUTION -> SHAPE: {P.shape}, TYPE: {P.dtype}")
-    P_new = P.transpose(2, 3, 0, 1).copy()    
-    # V, policy = jcr.jcr_pi_contraction_numpy(P_new, plots=False)            
-    V, policy, i_eval_total, time_ = jcr.jcr_pi_contraction_cuda_atomicmaxglosten(P_new, plots=False)
+    print(f"JOINT DISTRIBUTION -> SHAPE: {P.shape}, TYPE: {P.dtype}")    
+    # V, policy = jcr.jcr_pi_contraction_numpy(P, plots=False)            
+    # V, policy, i_eval_total, time_ = jcr.jcr_pi_contraction_cuda_atomicmaxglosten(P, plots=False)
     
     # jcr.plot_value_and_policy_jcr(V, policy)
     print("JACK'S CAR RENTAL DONE.")

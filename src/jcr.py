@@ -15,8 +15,8 @@ from matplotlib import pyplot as plt
 from scipy.ndimage import label
 
 # global settings
-MAX_CARS_AT_LOC = 30
-MAX_CARS_MOVED = 10
+MAX_CARS_AT_LOC = 20
+MAX_CARS_MOVED = 5
 REWARD_CAR_RENTED = 10.0
 REWARD_CAR_MOVED = -2.0
 GAMMA = 0.9
@@ -74,7 +74,7 @@ def mdp_joint_distr_jcr(states=STATES, actions=ACTIONS, rewards=REWARDS, request
                     cars_at_0_next = min(cars_at_0 - rented_at_0 + returned_at_0, max_cars_at_loc)
                     cars_at_1_next = min(cars_at_1 - rented_at_1 + returned_at_1, max_cars_at_loc)
                     s_next_index = cars_at_0_next * (max_cars_at_loc + 1) + cars_at_1_next                                                              
-                    P[reward_index, s_next_index, s_index, a_index] += P_request * P_return
+                    P[s_index, a_index, reward_index, s_next_index] += P_request * P_return
     if return_as_float32_array:
         P = P.astype(np.float32)                                                             
     t2 = time.time()
