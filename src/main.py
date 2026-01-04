@@ -20,7 +20,7 @@ g_props = gpu_props()
 
 # experiment settings
 MAKE_JCR_MDP_JOINT_DISTR = False # False implies the distribution shall be read from a .pkl file prepared earlier
-SEED = 0
+SEED = 1
 GAMMA = 0.9
 EPS = 1e-2
 TOLERANCE_V = 1e-7
@@ -78,11 +78,11 @@ if __name__ == "__main__":
     print(f"V FOR INITIAL POLICY ZEROED.")
     print(line_separator)    
     
-    policy_out, V_out, d, k_main, k_eval_total, time_ = jcr.jcr_pi_contraction_numpy(
-         policy_in, V_in, P,
-         gamma=GAMMA, eps=EPS, tolerance_v=TOLERANCE_V,      
-         states=jcr.STATES, actions=jcr.ACTIONS, rewards_rental=jcr.REWARDS_RENTAL, reward_car_moved=jcr.REWARD_CAR_MOVED,    
-         verbose=True, verbose_iters=False, plots=PLOTS)     
+    # policy_out, V_out, d, k_main, k_eval_total, time_ = jcr.jcr_pi_contraction_numpy(
+    #      policy_in, V_in, P,
+    #      gamma=GAMMA, eps=EPS, tolerance_v=TOLERANCE_V,      
+    #      states=jcr.STATES, actions=jcr.ACTIONS, rewards_rental=jcr.REWARDS_RENTAL, reward_car_moved=jcr.REWARD_CAR_MOVED,    
+    #      verbose=True, verbose_iters=False, plots=PLOTS)     
 
     policy_out, V_out, d, k_main, k_eval_total, time_ = jcr.jcr_pi_contraction_cuda_atomicmaxglosten(
          policy_in, V_in, dev_P,
@@ -91,14 +91,21 @@ if __name__ == "__main__":
          lazy_stop_check=1, tpb=jcr.DEFAULT_TPB,
          verbose=True, verbose_iters=False, plots=PLOTS)
     
-    policy_out, V_out, d, k_main, k_eval_total, time_ = jcr.jcr_pi_contraction_cuda_atomicmax(
-         policy_in, V_in, dev_P,
-         gamma=GAMMA, eps=EPS, tolerance_v=TOLERANCE_V,
-         states=jcr.STATES, actions=jcr.ACTIONS, rewards_rental=jcr.REWARDS_RENTAL, reward_car_moved=jcr.REWARD_CAR_MOVED,                 
-         lazy_stop_check=1, tpb=jcr.DEFAULT_TPB,
-         verbose=True, verbose_iters=False, plots=PLOTS)    
+    # policy_out, V_out, d, k_main, k_eval_total, time_ = jcr.jcr_pi_contraction_cuda_atomicmax(
+    #      policy_in, V_in, dev_P,
+    #      gamma=GAMMA, eps=EPS, tolerance_v=TOLERANCE_V,
+    #      states=jcr.STATES, actions=jcr.ACTIONS, rewards_rental=jcr.REWARDS_RENTAL, reward_car_moved=jcr.REWARD_CAR_MOVED,                 
+    #      lazy_stop_check=1, tpb=jcr.DEFAULT_TPB,
+    #      verbose=True, verbose_iters=False, plots=PLOTS)    
+    #
+    # policy_out, V_out, d, k_main, k_eval_total, time_ = jcr.jcr_pi_contraction_cuda_reducemax(
+    #     policy_in, V_in, dev_P,
+    #     gamma=GAMMA, eps=EPS, tolerance_v=TOLERANCE_V,
+    #     states=jcr.STATES, actions=jcr.ACTIONS, rewards_rental=jcr.REWARDS_RENTAL, reward_car_moved=jcr.REWARD_CAR_MOVED,                 
+    #     lazy_stop_check=1, tpb=jcr.DEFAULT_TPB,
+    #     verbose=True, verbose_iters=False, plots=PLOTS)    
     
-    policy_out, V_out, d, k_main, k_eval_total, time_ = jcr.jcr_pi_contraction_cuda_reducemax(
+    policy_out, V_out, d, k_main, k_eval_total, time_ = jcr.jcr_pi_contraction_cuda_gridsync(
         policy_in, V_in, dev_P,
         gamma=GAMMA, eps=EPS, tolerance_v=TOLERANCE_V,
         states=jcr.STATES, actions=jcr.ACTIONS, rewards_rental=jcr.REWARDS_RENTAL, reward_car_moved=jcr.REWARD_CAR_MOVED,                 
