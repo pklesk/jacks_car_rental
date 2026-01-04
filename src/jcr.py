@@ -800,9 +800,9 @@ def jcr_pi_contraction_cuda_gridsync(policy_in, V_in, dev_P,
             dev_V_in, dev_V_out = dev_V_out, dev_V_in
             print(f"[!! due to swap: {dev_V_in}, {dev_V_out}]")        
         t2_eval = time.time()
-        tmp_V_in = dev_V_in.copy_to_host()
-        cuda.synchronize()
-        print(f"tmp_V_in:\n{tmp_V_in}")
+        # tmp_V_in = dev_V_in.copy_to_host()
+        # cuda.synchronize()
+        # print(f"tmp_V_in:\n{tmp_V_in}")
         if verbose_iters:             
             d = dev_d.copy_to_host()
             print(f"[policy evaluation iterations {k_eval} [d_inf: {str(d[0])}, time: {t2_eval - t1_eval} s]].")
@@ -889,7 +889,8 @@ def jcr_pi_contraction_cuda_gridsync_eval(P, V_in, policy, reward_car_moved, gam
         k += 1
         g.sync()
         if b == 0 and t == 0:
-            if d[0] <= eps:
+            print(k, d[0])
+            if d[0] <= eps:                
                 stop_all[0] = True
                 k_eval_total[0] += k        
             else:
