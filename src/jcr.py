@@ -214,12 +214,6 @@ def jcr_pi_contraction_cuda_atomicmaxglosten(policy_in, V_in, dev_P,
         k_eval = 0
         while True:
             t1_eval = time.time()
-            if k_main == 1 and k_eval == 0:
-                tmp_V = dev_V_in.copy_to_host()
-                tmp_policy = dev_policy.copy_to_host()
-                cuda.synchronize()
-                print(f"tmp_V:\n{tmp_V}")
-                print(f"tmp_policy:\n{tmp_policy}")                
             jcr_pi_contraction_cuda_atomicmax_dreset[1, 1](dev_d)
             jcr_pi_contraction_cuda_atomicmaxglosten_eval[bpg, tpb](dev_P, dev_V_in, dev_policy, reward_car_moved, gamma, dev_V_out, dev_d)            
             t2_eval = time.time()
@@ -786,7 +780,7 @@ def jcr_pi_contraction_cuda_gridsync(policy_in, V_in, dev_P,
     bpg_eval = max_bpg_gridsync
     bpg_improve = states.shape[0]
     if verbose:
-        spb = (states.shape[0] + bpg - 1) // bpg
+        spb = (states.shape[0] + bpg_eval - 1) // bpg_eval
         print(f"[_eval kernel -> bpg: {bpg_eval}, tpb: {tpb}, spb: {spb}]")
         print(f"[_improve kernel -> bpg: {bpg_improve}, tpb: {tpb}]")
     k_main = 0       
@@ -797,26 +791,15 @@ def jcr_pi_contraction_cuda_gridsync(policy_in, V_in, dev_P,
             print(f"[main iteration {k_main + 1}:]")
         # POLICY EVALUATION        
         t1_eval = time.time()
-        if k_main == 1:
-            tmp_V_gs = dev_V_in.copy_to_host()
-            tmp_policy_gs = dev_policy.copy_to_host()
-            cuda.synchronize()
-            print(f"tmp_V_gs:\n{tmp_V_gs}")
-            print(f"tmp_policy_gs:\n{tmp_policy_gs}")
         jcr_pi_contraction_cuda_gridsync_reset[1, 1](dev_d, dev_stop_all)
         jcr_pi_contraction_cuda_gridsync_eval[bpg_eval, tpb](dev_P, dev_V_in, dev_policy, reward_car_moved, gamma, eps, dev_V_out, dev_d, dev_k_eval_total, dev_stop_all)                        
         k_eval_total = dev_k_eval_total.copy_to_host()[0]
         cuda.synchronize()
         k_eval = k_eval_total - k_eval_total_so_far
         k_eval_total_so_far = k_eval_total
-        print(f"[!! before swap: {dev_V_in}, {dev_V_out}]")
         if k_eval % 2 == 1:            
-            dev_V_in, dev_V_out = dev_V_out, dev_V_in
-            print(f"[!! due to swap: {dev_V_in}, {dev_V_out}]")        
+            dev_V_in, dev_V_out = dev_V_out, dev_V_in        
         t2_eval = time.time()
-        # tmp_V_in = dev_V_in.copy_to_host()
-        # cuda.synchronize()
-        # print(f"tmp_V_in:\n{tmp_V_in}")
         if verbose_iters:             
             d = dev_d.copy_to_host()
             print(f"[policy evaluation iterations {k_eval} [d_inf: {str(d[0])}, time: {t2_eval - t1_eval} s]].")
