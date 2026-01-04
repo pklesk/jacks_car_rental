@@ -78,18 +78,18 @@ if __name__ == "__main__":
     print(f"V FOR INITIAL POLICY ZEROED.")
     print(line_separator)    
     
-    # policy_out, V_out, d, k_main, k_eval_total, time_ = jcr.jcr_pi_contraction_numpy(
-    #      policy_in, V_in, P,
-    #      gamma=GAMMA, eps=EPS, tolerance_v=TOLERANCE_V,      
-    #      states=jcr.STATES, actions=jcr.ACTIONS, rewards_rental=jcr.REWARDS_RENTAL, reward_car_moved=jcr.REWARD_CAR_MOVED,    
-    #      verbose=True, verbose_iters=False, plots=PLOTS)      
+    policy_out, V_out, d, k_main, k_eval_total, time_ = jcr.jcr_pi_contraction_numpy(
+         policy_in, V_in, P,
+         gamma=GAMMA, eps=EPS, tolerance_v=TOLERANCE_V,      
+         states=jcr.STATES, actions=jcr.ACTIONS, rewards_rental=jcr.REWARDS_RENTAL, reward_car_moved=jcr.REWARD_CAR_MOVED,    
+         verbose=True, verbose_iters=False, plots=PLOTS)      
 
-    # policy_out, V_out, d, k_main, k_eval_total, time_ = jcr.jcr_pi_contraction_cuda_atomicmaxglosten(
-    #      policy_in, V_in, dev_P,
-    #      gamma=GAMMA, eps=EPS, tolerance_v=TOLERANCE_V,
-    #      states=jcr.STATES, actions=jcr.ACTIONS, rewards_rental=jcr.REWARDS_RENTAL, reward_car_moved=jcr.REWARD_CAR_MOVED,                 
-    #      lazy_stop_check=1, tpb=jcr.DEFAULT_TPB,
-    #      verbose=True, verbose_iters=False, plots=PLOTS)
+    policy_out, V_out, d, k_main, k_eval_total, time_ = jcr.jcr_pi_contraction_cuda_atomicmaxglosten(
+         policy_in, V_in, dev_P,
+         gamma=GAMMA, eps=EPS, tolerance_v=TOLERANCE_V,
+         states=jcr.STATES, actions=jcr.ACTIONS, rewards_rental=jcr.REWARDS_RENTAL, reward_car_moved=jcr.REWARD_CAR_MOVED,                 
+         lazy_stop_check=1, tpb=jcr.DEFAULT_TPB,
+         verbose=True, verbose_iters=False, plots=PLOTS)
     
     policy_out, V_out, d, k_main, k_eval_total, time_ = jcr.jcr_pi_contraction_cuda_atomicmax(
          policy_in, V_in, dev_P,
@@ -98,12 +98,12 @@ if __name__ == "__main__":
          lazy_stop_check=1, tpb=jcr.DEFAULT_TPB,
          verbose=True, verbose_iters=False, plots=PLOTS)    
     
-    # policy_out, V_out, d, k_main, k_eval_total, time_ = jcr.jcr_pi_contraction_cuda_reducemax(
-    #     policy_in, V_in, dev_P,
-    #     gamma=GAMMA, eps=EPS, tolerance_v=TOLERANCE_V,
-    #     states=jcr.STATES, actions=jcr.ACTIONS, rewards_rental=jcr.REWARDS_RENTAL, reward_car_moved=jcr.REWARD_CAR_MOVED,                 
-    #     lazy_stop_check=1, tpb=jcr.DEFAULT_TPB,
-    #     verbose=True, verbose_iters=False, plots=PLOTS)
+    policy_out, V_out, d, k_main, k_eval_total, time_ = jcr.jcr_pi_contraction_cuda_reducemax(
+        policy_in, V_in, dev_P,
+        gamma=GAMMA, eps=EPS, tolerance_v=TOLERANCE_V,
+        states=jcr.STATES, actions=jcr.ACTIONS, rewards_rental=jcr.REWARDS_RENTAL, reward_car_moved=jcr.REWARD_CAR_MOVED,                 
+        lazy_stop_check=1, tpb=jcr.DEFAULT_TPB,
+        verbose=True, verbose_iters=False, plots=PLOTS)
     
     if PLOTS:   
         jcr.plot_value_and_policy_jcr(V_out, policy_out)        
