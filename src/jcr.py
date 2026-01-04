@@ -248,7 +248,7 @@ def jcr_pi_contraction_cuda_atomicmaxglosten(policy_in, V_in, dev_P,
     cuda.synchronize
     t2 = time.time()
     if verbose:
-        print(f"JCR PI CONTRACTION CUDA ATOMICMAXGLOSTEN DONE. [d_inf: {str(d)}, main iterations: {k_main}, evaluation iterations total: {k_eval_total}, time: {t2 - t1} s]")    
+        print(f"JCR PI CONTRACTION CUDA ATOMICMAXGLOSTEN DONE. [d_inf: {str(d[0])}, main iterations: {k_main}, evaluation iterations total: {k_eval_total}, time: {t2 - t1} s]")    
     return policy_out, V_out, d, k_main, k_eval_total, t2 - t1
 
 @cuda.jit(void(float32[:]))    
@@ -401,56 +401,9 @@ def jcr_pi_contraction_cuda_atomicmax(policy_in, V_in, dev_P,
     cuda.synchronize
     t2 = time.time()
     if verbose:
-        print(f"JCR PI CONTRACTION CUDA ATOMICMAX DONE. [d_inf: {str(d)}, main iterations: {k_main}, evaluation iterations total: {k_eval_total}, time: {t2 - t1} s]")    
+        print(f"JCR PI CONTRACTION CUDA ATOMICMAX DONE. [d_inf: {str(d[0])}, main iterations: {k_main}, evaluation iterations total: {k_eval_total}, time: {t2 - t1} s]")    
     return policy_out, V_out, d, k_main, k_eval_total, t2 - t1
                 
-@cuda.jit(void(float32[:,:,:,:], float32[:], float32[:], int16[:], float32, float32, float32[:]))
-def jcr_pi_contraction_cuda_atomicmax_eval_old(P, V_in, V_out, policy, reward_car_moved, gamma, d):
-    const_states = cuda.const.array_like(STATES)
-    const_actions = cuda.const.array_like(ACTIONS)
-    const_rewards_rental = cuda.const.array_like(REWARDS_RENTAL)
-    shared_v_new = cuda.shared.array(512, dtype=float32) # corresponds to DEFAULT_TPB
-    shared_v_in = cuda.shared.array(2048, dtype=float32) # corresponds to MAX_N_STATES
-    s_index = cuda.blockIdx.x
-    t = cuda.threadIdx.x
-    tpb = cuda.blockDim.x
-    n_states = const_states.shape[0]
-    n_rewards_rental = const_rewards_rental.shape[0]    
-    nspt = (n_states + tpb - 1) // tpb # next states per thread
-    next_state_index = t
-    for _ in range(nspt):
-        if next_state_index < n_states:
-            shared_v_in[next_state_index] = V_in[next_state_index]
-        next_state_index += tpb 
-    cuda.syncthreads()
-    a_index = policy[s_index]
-    reward_cars_moved = math.fabs(const_actions[a_index]) * reward_car_moved
-    v_new = float32(0.0)    
-    for r_index in range(n_rewards_rental):
-        shared_v_new[t] = float32(0.0)
-        cuda.syncthreads()
-        r = reward_cars_moved + const_rewards_rental[r_index]        
-        next_state_index = t
-        part_sum = float32(0.0)
-        for _ in range(nspt):
-            if next_state_index < n_states: 
-                part_sum += P[s_index, a_index, r_index, next_state_index] * (r + gamma * shared_v_in[next_state_index])             
-            next_state_index += tpb
-        shared_v_new[t] = part_sum
-        cuda.syncthreads()
-        stride = tpb >> 1
-        while stride > 0: # sum-reduction
-            if t < stride:
-                shared_v_new[t] += shared_v_new[t + stride]
-            cuda.syncthreads()
-            stride >>= 1
-        v_new += shared_v_new[0]
-        cuda.syncthreads() 
-    if t == 0:
-        v = V_in[s_index]
-        cuda.atomic.max(d, 0, math.fabs(v - v_new))
-        V_out[s_index] = v_new           
-
 @cuda.jit(void(float32[:,:,:,:], float32[:], int16[:], float32, float32, float32[:], float32[:]))
 def jcr_pi_contraction_cuda_atomicmax_eval(P, V_in, policy, reward_car_moved, gamma, V_out, d):
     const_states = cuda.const.array_like(STATES)
@@ -755,10 +708,10 @@ def jcr_pi_contraction_cuda_reducemax_psreduce(policy_stable):
 def jcr_pi_contraction_cuda_gridsync(policy_in, V_in, dev_P,                                             
                                      gamma, eps, tolerance_v,
                                      states=STATES, actions=ACTIONS, rewards_rental=REWARDS_RENTAL, reward_car_moved=REWARD_CAR_MOVED,                                              
-                                     lazy_stop_check=DEFAULT_LAZY_STOP_CHECK, tpb=DEFAULT_TPB, max_bpg_gridsync=None,
+                                     tpb=DEFAULT_TPB, max_bpg_gridsync=None,
                                      verbose=True, verbose_iters=False, plots=False):
     if verbose:
-        print(f"JCR PI CONTRACTION CUDA GRIDSYNC... [gamma: {gamma}, eps: {eps}, tolerance_v: {tolerance_v}, lazy_stop_check: {lazy_stop_check}, tpb: {tpb}, assumed max_bpg_gridsync: {max_bpg_gridsync}]")
+        print(f"JCR PI CONTRACTION CUDA GRIDSYNC... [gamma: {gamma}, eps: {eps}, tolerance_v: {tolerance_v}, tpb: {tpb}, assumed max_bpg_gridsync: {max_bpg_gridsync}]")
     t1 = time.time()    
     if verbose and plots:
         plot_value_and_policy_jcr(V_in, policy_in)                
@@ -950,4 +903,4 @@ def jcr_pi_contraction_cuda_gridsync_improve(P, V, reward_car_moved, gamma, poli
         cuda.syncthreads()
     if t == 0 and a_so_far != a_max_index:
         policy[s_index] = a_max_index
-        cuda.atomic.min(policy_stable, 0, int8(0))        
+        cuda.atomic.min(policy_stable, 0, int8(0))
