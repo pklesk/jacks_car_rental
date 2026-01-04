@@ -781,8 +781,8 @@ def jcr_pi_contraction_cuda_gridsync(policy_in, V_in, dev_P,
     bpg_improve = states.shape[0]
     if verbose:
         spb = (states.shape[0] + bpg_eval - 1) // bpg_eval
-        print(f"[_eval kernel -> bpg: {bpg_eval}, tpb: {tpb}, spb: {spb}]")
-        print(f"[_improve kernel -> bpg: {bpg_improve}, tpb: {tpb}]")
+        print(f"[kernel eval -> bpg: {bpg_eval} (cooperative group), tpb: {tpb}, spb: {spb}]")
+        print(f"[kernel improve -> bpg: {bpg_improve} (implied by number of states), tpb: {tpb}]")
     k_main = 0       
     k_eval_total_so_far = 0
     while True:
@@ -804,8 +804,8 @@ def jcr_pi_contraction_cuda_gridsync(policy_in, V_in, dev_P,
             d = dev_d.copy_to_host()
             print(f"[policy evaluation iterations {k_eval} [d_inf: {str(d[0])}, time: {t2_eval - t1_eval} s]].")
         t1_impr = time.time()            
-        jcr_pi_contraction_cuda_atomicmax_psreset[1, 1](dev_policy_stable)                   
-        jcr_pi_contraction_cuda_atomicmax_improve[bpg_improve, tpb](dev_P, dev_V_in, reward_car_moved, gamma, dev_policy, dev_policy_stable)                            
+        jcr_pi_contraction_cuda_gridsync_psreset[1, 1](dev_policy_stable)                   
+        jcr_pi_contraction_cuda_gridsync_improve[bpg_improve, tpb](dev_P, dev_V_in, reward_car_moved, gamma, dev_policy, dev_policy_stable)                            
         policy_stable = dev_policy_stable.copy_to_host()[0]
         policy_stable = True if policy_stable == 1 else False
         cuda.synchronize()
@@ -855,7 +855,7 @@ def jcr_pi_contraction_cuda_gridsync_eval(P, V_in, policy, reward_car_moved, gam
             if next_state_index < n_states:
                 shared_v_in[next_state_index] = V_src[next_state_index]
             next_state_index += tpb 
-        cuda.syncthreads()      
+        cuda.syncthreads()
         s_index = cuda.blockIdx.x    
         for _ in range(spb):
             if s_index < n_states:        
@@ -886,7 +886,6 @@ def jcr_pi_contraction_cuda_gridsync_eval(P, V_in, policy, reward_car_moved, gam
         k += 1
         g.sync()
         if b == 0 and t == 0:
-            print(k, d[0])
             if d[0] <= eps:                
                 stop_all[0] = True
                 k_eval_total[0] += k        
@@ -898,3 +897,57 @@ def jcr_pi_contraction_cuda_gridsync_eval(P, V_in, policy, reward_car_moved, gam
         tmp = V_src
         V_src = V_dst
         V_dst = tmp
+        
+@cuda.jit(void(int32[:]))    
+def jcr_pi_contraction_cuda_gridsync_psreset(policy_stable): # called exactly for 1 thread
+    policy_stable[0] = int32(1) 
+        
+@cuda.jit(void(float32[:,:,:,:], float32[:], float32, float32, int16[:], int32[:]))
+def jcr_pi_contraction_cuda_gridsync_improve(P, V, reward_car_moved, gamma, policy, policy_stable):
+    const_states = cuda.const.array_like(STATES)
+    const_actions = cuda.const.array_like(ACTIONS)
+    const_rewards_rental = cuda.const.array_like(REWARDS_RENTAL)
+    shared_q_new = cuda.shared.array(512, dtype=float32) # corresponds to DEFAULT_TPB
+    shared_v_in = cuda.shared.array(2048, dtype=float32) # corresponds to MAX_N_STATES
+    s_index = cuda.blockIdx.x
+    t = cuda.threadIdx.x
+    tpb = cuda.blockDim.x
+    n_states = const_states.shape[0]
+    n_rewards_rental = const_rewards_rental.shape[0]    
+    nspt = (n_states + tpb - 1) // tpb # next states per thread
+    next_state_index = t
+    for _ in range(nspt):
+        if next_state_index < n_states:
+            shared_v_in[next_state_index] = V[next_state_index]
+        next_state_index += tpb 
+    cuda.syncthreads()      
+    a_so_far = policy[s_index] 
+    q_max = -float32(inf)
+    a_max_index = int16(-1) 
+    for a_index in range(const_actions.shape[0]):        
+        reward_cars_moved = math.fabs(const_actions[a_index]) * reward_car_moved
+        t_part_sum = float32(0.0)
+        for r_index in range(n_rewards_rental):
+            r = reward_cars_moved + const_rewards_rental[r_index]        
+            next_state_index = t
+            for _ in range(nspt):
+                if next_state_index < n_states:             
+                    t_part_sum += P[s_index, a_index, r_index, next_state_index] * (r + gamma * shared_v_in[next_state_index])                 
+                next_state_index += tpb
+        shared_q_new[t] = t_part_sum
+        cuda.syncthreads()
+        stride = tpb >> 1
+        while stride > 0: # sum-reduction
+            if t < stride:
+                shared_q_new[t] += shared_q_new[t + stride]
+            cuda.syncthreads()
+            stride >>= 1 
+        if t == 0: 
+            q_a = shared_q_new[0]
+            if q_a > q_max: 
+                q_max = q_a
+                a_max_index = a_index
+        cuda.syncthreads()
+    if t == 0 and a_so_far != a_max_index:
+        policy[s_index] = a_max_index
+        cuda.atomic.min(policy_stable, 0, int8(0))        
