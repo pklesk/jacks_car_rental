@@ -783,10 +783,12 @@ def jcr_pi_contraction_cuda_gridsync(policy_in, V_in, dev_P,
         t2_discover = time.time()
         if verbose:
             print(f"[discovered max_bpg_gridsync: {max_bpg_gridsync}; time: {t2_discover - t1_discover} s]")
-    bpg = max_bpg_gridsync
+    bpg_eval = max_bpg_gridsync
+    bpg_improve = states.shape[0]
     if verbose:
         spb = (states.shape[0] + bpg - 1) // bpg
-        print(f"[bpg: {bpg}, tpb: {tpb}, spb in _eval kernel: {spb}]")
+        print(f"[_eval kernel -> bpg: {bpg_eval}, tpb: {tpb}, spb: {spb}]")
+        print(f"[_improve kernel -> bpg: {bpg_improve}, tpb: {tpb}]")
     k_main = 0       
     k_eval_total_so_far = 0
     while True:
@@ -802,7 +804,7 @@ def jcr_pi_contraction_cuda_gridsync(policy_in, V_in, dev_P,
             print(f"tmp_V_gs:\n{tmp_V_gs}")
             print(f"tmp_policy_gs:\n{tmp_policy_gs}")
         jcr_pi_contraction_cuda_gridsync_reset[1, 1](dev_d, dev_stop_all)
-        jcr_pi_contraction_cuda_gridsync_eval[bpg, tpb](dev_P, dev_V_in, dev_policy, reward_car_moved, gamma, eps, dev_V_out, dev_d, dev_k_eval_total, dev_stop_all)                        
+        jcr_pi_contraction_cuda_gridsync_eval[bpg_eval, tpb](dev_P, dev_V_in, dev_policy, reward_car_moved, gamma, eps, dev_V_out, dev_d, dev_k_eval_total, dev_stop_all)                        
         k_eval_total = dev_k_eval_total.copy_to_host()[0]
         cuda.synchronize()
         k_eval = k_eval_total - k_eval_total_so_far
@@ -820,7 +822,7 @@ def jcr_pi_contraction_cuda_gridsync(policy_in, V_in, dev_P,
             print(f"[policy evaluation iterations {k_eval} [d_inf: {str(d[0])}, time: {t2_eval - t1_eval} s]].")
         t1_impr = time.time()            
         jcr_pi_contraction_cuda_atomicmax_psreset[1, 1](dev_policy_stable)                   
-        jcr_pi_contraction_cuda_atomicmax_improve[bpg, tpb](dev_P, dev_V_in, reward_car_moved, gamma, dev_policy, dev_policy_stable)                            
+        jcr_pi_contraction_cuda_atomicmax_improve[bpg_improve, tpb](dev_P, dev_V_in, reward_car_moved, gamma, dev_policy, dev_policy_stable)                            
         policy_stable = dev_policy_stable.copy_to_host()[0]
         policy_stable = True if policy_stable == 1 else False
         cuda.synchronize()
