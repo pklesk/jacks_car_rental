@@ -33,7 +33,7 @@ MDP_PATH = f"../mdp_joint_distrs/mdp_joint_distr_jcr_{MAX_CARS_AT_LOC}_{MAX_CARS
 
 # CUDA defaults
 DEFAULT_TPB = cuda.get_current_device().MAX_THREADS_PER_BLOCK // 2 
-DEFAULT_LAZY_STOP_CHECK = 5
+DEFAULT_LAZY_STOP_CHECK = 1 # TODO 5
 
 # constraints
 MAX_N_STATES = 2048
