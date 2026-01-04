@@ -794,8 +794,15 @@ def jcr_pi_contraction_cuda_gridsync(policy_in, V_in, dev_P,
         k_eval_total = dev_k_eval_total.copy_to_host()[0]
         cuda.synchronize()
         k_eval = k_eval_total - k_eval_total_so_far
-        k_eval_total_so_far += k_eval_total        
+        k_eval_total_so_far = k_eval_total
+        print(f"[!! before swap: {dev_V_in}, {dev_V_out}]")
+        if k_eval % 2 == 1:            
+            dev_V_in, dev_V_out = dev_V_out, dev_V_in
+            print(f"[!! due to swap: {dev_V_in}, {dev_V_out}]")        
         t2_eval = time.time()
+        tmp_V_in = dev_V_in.copy_to_host()
+        cuda.synchronize()
+        print(f"tmp_V_in:\n{tmp_V_in}")
         if verbose_iters:             
             d = dev_d.copy_to_host()
             print(f"[policy evaluation iterations {k_eval} [d_inf: {str(d[0])}, time: {t2_eval - t1_eval} s]].")
@@ -874,7 +881,7 @@ def jcr_pi_contraction_cuda_gridsync_eval(P, V_in, policy, reward_car_moved, gam
                     cuda.syncthreads()
                     stride >>= 1            
                 if t == 0:        
-                    v = V_in[s_index]
+                    v = V_src[s_index]
                     v_new = shared_v_new[0]
                     cuda.atomic.max(d, 0, math.fabs(v - v_new))
                     V_dst[s_index] = v_new
@@ -892,4 +899,4 @@ def jcr_pi_contraction_cuda_gridsync_eval(P, V_in, policy, reward_car_moved, gam
             break
         tmp = V_src
         V_src = V_dst
-        V_dst = tmp                
+        V_dst = tmp
