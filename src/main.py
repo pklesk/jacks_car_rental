@@ -82,7 +82,7 @@ if __name__ == "__main__":
          policy_in, V_in, P,
          gamma=GAMMA, eps=EPS, tolerance_v=TOLERANCE_V,      
          states=jcr.STATES, actions=jcr.ACTIONS, rewards_rental=jcr.REWARDS_RENTAL, reward_car_moved=jcr.REWARD_CAR_MOVED,    
-         verbose=True, verbose_iters=False, plots=PLOTS)      
+         verbose=True, verbose_iters=False, plots=PLOTS)     
 
     policy_out, V_out, d, k_main, k_eval_total, time_ = jcr.jcr_pi_contraction_cuda_atomicmaxglosten(
          policy_in, V_in, dev_P,

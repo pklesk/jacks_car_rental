@@ -124,7 +124,8 @@ def jcr_pi_contraction_numpy(policy_in, V_in, P,
     if verbose and plots:
         plot_value_and_policy_jcr(V_in, policy_int)    
     policy = np.copy(policy_in)
-    V_out = np.copy(V_in)
+    V_src = np.copy(V_in)
+    V_dst = np.copy(V_in)
     k_main = 0
     k_eval_total = 0
     while True:
@@ -142,13 +143,13 @@ def jcr_pi_contraction_numpy(policy_in, V_in, P,
                 v_new = np.float32(0.0)
                 for r_index in range(rewards_rental.shape[0]):
                     r = reward_cars_moved + rewards_rental[r_index]
-                    v_new += P[s_index, a_index, r_index].dot(r + gamma * V_in)
-                V_out[s_index] = v_new
-            d = max(np.abs(V_in - V_out))
+                    v_new += P[s_index, a_index, r_index].dot(r + gamma * V_src)
+                V_dst[s_index] = v_new
+            d = max(np.abs(V_src - V_dst))
             k_eval += 1
-            tmp = V_in
-            V_in = V_out
-            V_out = tmp                 
+            tmp = V_src # ping-pong buffering
+            V_src = V_dst
+            V_dst = tmp                 
             t2_eval = time.time()
             if verbose_iters:
                 print(f"[policy evaluation iteration {k_eval} [d_inf: {str(d)}, time: {t2_eval - t1_eval} s]].")
@@ -166,7 +167,7 @@ def jcr_pi_contraction_numpy(policy_in, V_in, P,
                 q = 0.0
                 for r_index in range(rewards_rental.shape[0]):
                     r = reward_cars_moved + rewards_rental[r_index]
-                    q += (P[s_index, a_index, r_index].dot(r + gamma * V_in))
+                    q += (P[s_index, a_index, r_index].dot(r + gamma * V_src))
                 qs[a_index] = q
             policy[s_index] = np.argmax(qs)
             if policy[s_index] != a_so_far:
@@ -179,7 +180,7 @@ def jcr_pi_contraction_numpy(policy_in, V_in, P,
                 plot_value_and_policy_jcr(V, policy)
         if policy_stable or (k_eval == 1 and d <= tolerance_v):
             break
-    V_out = V_in
+    V_out = V_src
     policy_out = policy
     t2 = time.time()
     if verbose:
