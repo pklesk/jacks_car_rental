@@ -789,17 +789,19 @@ def jcr_pi_contraction_cuda_gridsync(policy_in, V_in, dev_P,
             print(f"[main iteration {k_main + 1}:]")
         # POLICY EVALUATION        
         t1_eval = time.time()
-        jcr_pi_contraction_cuda_gridsync_reset[1, 1](dev_d)
-        jcr_pi_contraction_cuda_gridsync_eval[bpg, tpb](dev_P, dev_V_in, dev_policy, reward_car_moved, gamma, dev_V_out, dev_d, dev_stop_all)            
+        jcr_pi_contraction_cuda_gridsync_reset[1, 1](dev_d, dev_stop_all)
+        jcr_pi_contraction_cuda_gridsync_eval[bpg, tpb](dev_P, dev_V_in, dev_policy, reward_car_moved, gamma, eps, dev_V_out, dev_d, dev_k_eval_total, dev_stop_all)                        
+        k_eval_total = dev_k_eval_total.copy_to_host()[0]
+        cuda.synchronize()
+        k_eval = k_eval_total - k_eval_total_so_far
+        k_eval_total_so_far += k_eval_total        
         t2_eval = time.time()
-        if verbose_iters: 
-            k_eval_total = dev_k_eval_total.copy_to_host()[0]
-            d = dev_d.copy_to_host()[0]
-            print(f"[policy evaluation iterations {k_eval_total - k_eval_total_so_far} [d_inf: {str(d[0])}, time: {t2_eval - t1_eval} s]].")            
-            k_eval_total_so_far += k_eval_total
+        if verbose_iters:             
+            d = dev_d.copy_to_host()
+            print(f"[policy evaluation iterations {k_eval} [d_inf: {str(d[0])}, time: {t2_eval - t1_eval} s]].")
         t1_impr = time.time()            
         jcr_pi_contraction_cuda_atomicmax_psreset[1, 1](dev_policy_stable)                   
-        jcr_pi_contraction_cuda_atomicmax_improve[bpg, tpb](dev_P, dev_V_in, reward_car_moved, gamma, dev_policy, dev_policy_stable)                    
+        jcr_pi_contraction_cuda_atomicmax_improve[bpg, tpb](dev_P, dev_V_in, reward_car_moved, gamma, dev_policy, dev_policy_stable)                            
         policy_stable = dev_policy_stable.copy_to_host()[0]
         policy_stable = True if policy_stable == 1 else False
         cuda.synchronize()
@@ -817,7 +819,7 @@ def jcr_pi_contraction_cuda_gridsync(policy_in, V_in, dev_P,
     t2 = time.time()
     if verbose:
         print(f"JCR PI CONTRACTION CUDA GRIDSYNC DONE. [d_inf: {str(d[0])}, main iterations: {k_main}, evaluation iterations total: {k_eval_total}, time: {t2 - t1} s]")    
-    return policy_out, V_out, d, k_main, k_eval_total, t2 - t1
+    return policy_out, V_out, d, k_main, k_eval_total_so_far, t2 - t1
 
 @cuda.jit(void(float32[:], boolean[:]))    
 def jcr_pi_contraction_cuda_gridsync_reset(d, stop_all): # called exactly for 1 thread
@@ -882,8 +884,9 @@ def jcr_pi_contraction_cuda_gridsync_eval(P, V_in, policy, reward_car_moved, gam
         if b == 0 and t == 0:
             if d[0] <= eps:
                 stop_all[0] = True
-                k_eval_total[0] += k
-                break
+                k_eval_total[0] += k        
+            else:
+                d[0] = float32(0.0)            
         g.sync()
         if stop_all[0]:            
             break
