@@ -729,7 +729,7 @@ def jcr_pi_contraction_cuda_reducemax_improve(P, V, reward_car_moved, gamma, pol
         policy_stable[s_index] = int32(0) if a_so_far != a_max_index else int32(1)
 
 @cuda.jit(void(int32[:]))    
-def jcr_pi_contraction_reducemax_psreduce(policy_stable):         
+def jcr_pi_contraction_cuda_reducemax_psreduce(policy_stable):         
     shared_policy_stable = cuda.shared.array(2048, dtype=int32) # corresponds to MAX_N_STATES
     tpb = cuda.blockDim.x
     job_blocks = policy_stable.shape[0]
