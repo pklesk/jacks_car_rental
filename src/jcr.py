@@ -173,7 +173,7 @@ def jcr_pi_contraction_numpy(policy_in, V_in, P,
         t2_impr = time.time()
         k_main += 1
         if verbose_iters:
-            print(f"[policy improvement [policy_stable: {policy_stable}, d_inf: {str(d)}, d_inf < tolerance_v: {d < tolerance_v}, time: {t2_impr - t1_impr} s]].")        
+            print(f"[policy improvement [policy_stable: {policy_stable}, d_inf: {str(d)}, d_inf <= tolerance_v: {d <= tolerance_v}, time: {t2_impr - t1_impr} s]].")        
             if plots:
                 plot_value_and_policy_jcr(V, policy)
         if policy_stable or (k_eval == 1 and d <= tolerance_v):
@@ -238,10 +238,10 @@ def jcr_pi_contraction_cuda_atomicmaxglosten(policy_in, V_in, dev_P,
         t2_impr = time.time()
         k_main += 1
         if verbose_iters:
-            print(f"[policy improvement [policy_stable: {policy_stable}, d_inf: {str(d[0])}, d_inf < tolerance_v: {d[0] < tolerance_v}, time: {t2_impr - t1_impr} s]].")        
+            print(f"[policy improvement [policy_stable: {policy_stable}, d_inf: {str(d[0])}, d_inf <= tolerance_v: {d[0] <= tolerance_v}, time: {t2_impr - t1_impr} s]].")        
             if plots:                
                 plot_value_and_policy_jcr(dev_V_in.copy_to_host(), dev_policy.copy_to_host())
-        if policy_stable or (k_eval == 1 and d <= tolerance_v):
+        if policy_stable or (k_eval == 1 and d[0] <= tolerance_v):
             break        
     V_out = dev_V_in.copy_to_host()
     policy_out = dev_policy.copy_to_host()
@@ -391,10 +391,10 @@ def jcr_pi_contraction_cuda_atomicmax(policy_in, V_in, dev_P,
         t2_impr = time.time()
         k_main += 1
         if verbose_iters:
-            print(f"[policy improvement [policy_stable: {policy_stable}, d_inf: {str(d[0])}, d_inf < tolerance_v: {d[0] < tolerance_v}, time: {t2_impr - t1_impr} s]].")        
+            print(f"[policy improvement [policy_stable: {policy_stable}, d_inf: {str(d[0])}, d_inf <= tolerance_v: {d[0] <= tolerance_v}, time: {t2_impr - t1_impr} s]].")        
             if plots:                
                 plot_value_and_policy_jcr(dev_V_in.copy_to_host(), dev_policy.copy_to_host())
-        if policy_stable or (k_eval == 1 and d <= tolerance_v):
+        if policy_stable or (k_eval == 1 and d[0] <= tolerance_v):
             break        
     V_out = dev_V_out.copy_to_host()
     policy_out = dev_policy.copy_to_host()
@@ -550,10 +550,10 @@ def jcr_pi_contraction_cuda_reducemax(policy_in, V_in, dev_P,
         t2_impr = time.time()
         k_main += 1
         if verbose_iters:
-            print(f"[policy improvement [policy_stable: {policy_stable}, d_inf: {str(d[0])}, d_inf < tolerance_v: {d[0] < tolerance_v}, time: {t2_impr - t1_impr} s]].")        
+            print(f"[policy improvement [policy_stable: {policy_stable}, d_inf: {str(d[0])}, d_inf <= tolerance_v: {d[0] <= tolerance_v}, time: {t2_impr - t1_impr} s]].")        
             if plots:                
                 plot_value_and_policy_jcr(dev_V_in.copy_to_host(), dev_policy.copy_to_host())
-        if policy_stable or (k_eval == 1 and d <= tolerance_v):
+        if policy_stable or (k_eval == 1 and d[0] <= tolerance_v):
             break        
     V_out = dev_V_out.copy_to_host()
     policy_out = dev_policy.copy_to_host()
@@ -765,10 +765,10 @@ def jcr_pi_contraction_cuda_gridsync(policy_in, V_in, dev_P,
         t2_impr = time.time()
         k_main += 1
         if verbose_iters:
-            print(f"[policy improvement [policy_stable: {policy_stable}, d_inf: {str(d[0])}, d_inf < tolerance_v: {d[0] < tolerance_v}, time: {t2_impr - t1_impr} s]].")        
+            print(f"[policy improvement [policy_stable: {policy_stable}, d_inf: {str(d[0])}, d_inf <= tolerance_v: {d[0] <= tolerance_v}, time: {t2_impr - t1_impr} s]].")        
             if plots:                
                 plot_value_and_policy_jcr(dev_V_in.copy_to_host(), dev_policy.copy_to_host())
-        if policy_stable or (k_eval == 1 and d <= tolerance_v):
+        if policy_stable or (k_eval == 1 and d[0] <= tolerance_v):
             break        
     V_out = dev_V_out.copy_to_host()
     policy_out = dev_policy.copy_to_host()
