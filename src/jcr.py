@@ -654,7 +654,7 @@ def jcr_pi_contraction_cuda_reducemax_eval(P, V_in, policy, reward_car_moved, ga
         V_out[s_index] = v_new
 
 @cuda.jit(void(float32[:]))    
-def jcr_pi_contraction_reducemax_dreduce(d):         
+def jcr_pi_contraction_cuda_reducemax_dreduce(d):         
     shared_d = cuda.shared.array(2048, dtype=float32) # corresponds to MAX_N_STATES
     tpb = cuda.blockDim.x
     job_blocks = d.shape[0]
