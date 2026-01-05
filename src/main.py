@@ -22,7 +22,7 @@ g_props = gpu_props()
 # experiment settings
 MAKE_JCR_MDP_JOINT_DISTR = False # False implies the distribution shall be read from a .pkl file prepared earlier
 SEED = 1
-GAMMA = 0.99
+GAMMA = 0.9
 EPS = 1e-2
 TOLERANCE_V = 1e-7
 PLOTS = False
@@ -119,7 +119,7 @@ if __name__ == "__main__":
         gamma=GAMMA, eps=EPS, tolerance_v=TOLERANCE_V,
         states=jcr.STATES, actions=jcr.ACTIONS, rewards_rental=jcr.REWARDS_RENTAL, reward_car_moved=jcr.REWARD_CAR_MOVED,                 
         tpb=jcr.DEFAULT_TPB, verbose=True, verbose_iters=False, plots=PLOTS)
-    print(line_separator)    
+    print(line_separator)
         
     t2 = time.time()    
     print(f"JACK'S CAR RENTAL DONE. [hash string: TODO, time: {t2 - t1} s]")
