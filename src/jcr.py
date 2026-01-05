@@ -14,8 +14,8 @@ from matplotlib import pyplot as plt
 from scipy.ndimage import label
 
 # global settings
-MAX_CARS_AT_LOC = 10
-MAX_CARS_MOVED = 10
+MAX_CARS_AT_LOC = 20
+MAX_CARS_MOVED = 5
 REWARD_CAR_RENTED = np.float32(10.0)
 REWARD_CAR_MOVED = np.float32(-2.0)
 
@@ -787,6 +787,7 @@ def jcr_pi_contraction_cuda_gridsync(policy_in, V_in, dev_P,
         t2_eval = time.time()
         if verbose_iters:             
             d = dev_d.copy_to_host()
+            cuda.synchronize()
             print(f"[policy evaluation iterations {k_eval} [d_inf: {str(d[0])}, time: {t2_eval - t1_eval} s]]")
         t1_impr = time.time()            
         jcr_pi_contraction_cuda_gridsync_psreset[1, 1](dev_policy_stable)                   
@@ -808,6 +809,7 @@ def jcr_pi_contraction_cuda_gridsync(policy_in, V_in, dev_P,
             break        
     V_out = dev_V_out.copy_to_host()
     policy_out = dev_policy.copy_to_host()
+    d = dev_d.copy_to_host()
     cuda.synchronize
     t2 = time.time()
     if verbose:
