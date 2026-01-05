@@ -33,8 +33,7 @@ def unpickle_objects(fname):
     t2 = time.time()
     print(f"UNPICKLE OBJECTS DONE. [time: {t2 - t1} s]")
     return some_list
- 
- 
+  
 def dict_to_str(d, indent=0):
     """Returns a vertically formatted string representation of a dictionary."""
     indent_str = indent * " "
