@@ -22,9 +22,9 @@ g_props = gpu_props()
 # experiment settings
 MAKE_JCR_MDP_JOINT_DISTR = False # False implies the distribution shall be read from a .pkl file prepared earlier
 SEED = 1
-GAMMA = 0.9
+GAMMA = 0.99
 EPS = 1e-2
-TOLERANCE_V = 1e-6
+TOLERANCE_V = 1e-7
 PLOTS = False
                      
 def jcr_setup(make_distr):
