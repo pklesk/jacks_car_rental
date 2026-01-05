@@ -23,7 +23,7 @@ g_props = gpu_props()
 MAKE_JCR_MDP_JOINT_DISTR = False # False implies the distribution shall be read from a .pkl file prepared earlier
 SEED = 1
 GAMMA = 0.9
-EPS = 1e-4
+EPS = 1e-2
 TOLERANCE_V = 1e-6
 PLOTS = False
                      

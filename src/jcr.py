@@ -14,8 +14,8 @@ from matplotlib import pyplot as plt
 from scipy.ndimage import label
 
 # global settings
-MAX_CARS_AT_LOC = 20
-MAX_CARS_MOVED = 5
+MAX_CARS_AT_LOC = 30
+MAX_CARS_MOVED = 10
 REWARD_CAR_RENTED = np.float32(10.0)
 REWARD_CAR_MOVED = np.float32(-2.0)
 
@@ -30,12 +30,12 @@ RETURN_DISTRS_AT_LOCS = [np.array([l**n * np.exp(-l) / math.factorial(n) for n i
 for distrs in [REQUEST_DISTRS_AT_LOCS, RETURN_DISTRS_AT_LOCS]: 
     for i in range(len(distrs)):
         distrs[i][-1] = 1.0 - np.sum(distrs[i][:-1]) # summation of distribution to 1 
-REWARDS_RENTAL = np.arange(2 * MAX_CARS_AT_LOC + 1) * REWARD_CAR_RENTED 
+REWARDS_RENTAL = REWARD_CAR_RENTED * np.arange(2 * MAX_CARS_AT_LOC + 1, dtype=np.float32) 
 MDP_PATH = f"../mdp_joint_distrs/mdp_joint_distr_jcr_{MAX_CARS_AT_LOC}_{MAX_CARS_MOVED}.pkl"
 
 # CUDA defaults
 DEFAULT_TPB = cuda.get_current_device().MAX_THREADS_PER_BLOCK // 2 
-DEFAULT_LAZY_STOP_CHECK = 1
+DEFAULT_LAZY_STOP_CHECK = 5
 
 # constraints
 MAX_N_STATES = 2048
@@ -155,7 +155,11 @@ def jcr_pi_contraction_numpy(policy_in, V_in, P,
                 v_new = 0.0
                 for r_index in range(rewards_rental.shape[0]):
                     r = reward_cars_moved + rewards_rental[r_index]
-                    v_new += P[s_index, a_index, r_index].astype(np.float64).dot(r + gamma * V_src)
+                    v_new += P[s_index, a_index, r_index].dot(r + gamma * V_src)             
+                    # alternative code below when fma (fused mul-add) needs to be avoided for test purposes
+                    # term_add = r + gamma * V_src
+                    # term_mul_add = P[s_index, a_index, r_index] * term_add
+                    # v_new += np.sum(term_mul_add, dtype=np.float32)
                 V_dst[s_index] = v_new
             d = max(np.abs(V_src - V_dst))
             k_eval += 1
