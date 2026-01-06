@@ -27,7 +27,7 @@ DEFAULT_REPETITIONS = 3
 MAKE_JCR_MDP_JOINT_DISTR = False # False implies the distribution shall be read from a .pkl file prepared earlier
 SEED = 1
 GAMMA = 0.9
-EPS = 1e-2
+EPS = 1e-4
 TOLERANCE_V = 1e-7
 PLOTS = False
 
@@ -36,7 +36,7 @@ APPROACHES_PI_CONTRACTION = { # approaches for contraction iteration (policy ite
     jcr.jcr_pi_contraction_cuda_atomicmax.__name__: (True, jcr.jcr_pi_contraction_cuda_atomicmaxglosten, DEFAULT_REPETITIONS, {"lazy_stop_check": jcr.DEFAULT_LAZY_STOP_CHECK, "tpb": jcr.DEFAULT_TPB}),
     jcr.jcr_pi_contraction_cuda_atomicmaxglosten.__name__: (True, jcr.jcr_pi_contraction_cuda_atomicmaxglosten, DEFAULT_REPETITIONS, {"lazy_stop_check": jcr.DEFAULT_LAZY_STOP_CHECK, "tpb": jcr.DEFAULT_TPB}),    
     jcr.jcr_pi_contraction_cuda_reducemax.__name__: (True, jcr.jcr_pi_contraction_cuda_reducemax, DEFAULT_REPETITIONS, {"lazy_stop_check": jcr.DEFAULT_LAZY_STOP_CHECK, "tpb": jcr.DEFAULT_TPB}),
-    jcr.jcr_pi_contraction_cuda_gridsync.__name__: (False, jcr.jcr_pi_contraction_cuda_gridsync, DEFAULT_REPETITIONS, {"tpb": jcr.DEFAULT_TPB})
+    jcr.jcr_pi_contraction_cuda_gridsync.__name__: (True, jcr.jcr_pi_contraction_cuda_gridsync, DEFAULT_REPETITIONS, {"tpb": jcr.DEFAULT_TPB})
     }
                                
 def jcr_setup(make_distr):
