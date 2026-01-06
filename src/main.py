@@ -77,19 +77,10 @@ def approaches_info(approaches):
             info[key] = (approaches[key][0], approaches[key][1].__name__, 0, {})
     return info
 
-def gpu_warmup(dev_P):
-    d_policy = np.zeros(1, dtype=np.int16)
-    d_V = np.zeros(1, dtype=np.float32)
-    d_P_tiny = dev_P[:1, :1, :1, :1]
-    jcr.jcr_pi_contraction_cuda_atomicmax(
-        d_policy, d_V, d_P_tiny, 
-        gamma=0.1, eps=0.1, tolerance_v=0.1, 
-        states=jcr.STATES[:1], actions=jcr.ACTIONS[:1], 
-        rewards_rental=jcr.REWARDS_RENTAL[:1], reward_car_moved=jcr.REWARD_CAR_MOVED,
-        lazy_stop_check=1, tpb=32, plots=False
-    )
+def gpu_warmup(policy, V, dev_P):
+    jcr.jcr_pi_contraction_cuda_atomicmax(policy, V, dev_P, gamma=0.1, eps=1e2, tolerance_v=1e2, verbose=False)
     cuda.synchronize()
-    print("[gpu warmup done]")
+    print("GPU WARMED UP.")
             
 # --------------------------------------------------------------------------------------------------------------------------------
 # MAIN
@@ -134,7 +125,6 @@ if __name__ == "__main__":
     if P is None:
         sys.exit()
     print(line_separator)
-    gpu_warmup(dev_P)
     
     np.random.seed(SEED)
     V_in = np.zeros(jcr.STATES.shape[0], dtype=np.float32)
@@ -142,8 +132,8 @@ if __name__ == "__main__":
     policy_in = np.random.randint(-jcr.MAX_CARS_MOVED, jcr.MAX_CARS_MOVED + 1, size=jcr.STATES.shape[0], dtype=np.int16) + jcr.MAX_CARS_MOVED
     print(f"RANDOM INITIAL POLICY [shape: {policy_in.shape}]:\n{jcr.ACTIONS[policy_in]}")    
     if PLOTS:
-        jcr.plot_value_and_policy_jcr(V_in, policy_in)    
-                
+        jcr.plot_value_and_policy_jcr(V_in, policy_in)        
+
     # about to execute policy iteration contraction approaches
     pi_contraction_ref_approach_name = None
     pi_contraction_ref_V_out = None
@@ -153,11 +143,15 @@ if __name__ == "__main__":
     pi_contraction_ds = {}
     pi_contraction_ks_main = {}
     pi_contraction_ks_eval_total = {}        
+    gpu_warmed_up = False
     for index, (approach_name, (approach_on, approach_function, approach_repetitions, approach_extra_params)) in enumerate(APPROACHES_PI_CONTRACTION.items()):
         if approach_on:
             print(line_separator)
             print(f"PI CONTRACTION APPROACH {index + 1}: {approach_name}...", flush=True)
             P_ = P if approach_name == jcr.jcr_pi_contraction_cpu_numpy.__name__ else dev_P
+            if "cuda" in approach_name and not gpu_warmed_up:
+                gpu_warmup(policy_in, V_in, P_)
+                gpu_warmed_up = True
             for r in range(approach_repetitions):
                 print("---")               
                 print(f"REPETITION: {r + 1}/{approach_repetitions}:")
