@@ -17,7 +17,7 @@ from matplotlib import pyplot as plt
 from scipy.ndimage import label
 
 # global settings
-MAX_CARS_AT_LOC = 20
+MAX_CARS_AT_LOC = 10
 MAX_CARS_MOVED = 5
 REWARD_CAR_RENTED = np.float32(10.0)
 REWARD_CAR_MOVED = np.float32(-2.0)
@@ -598,7 +598,7 @@ def jcr_pi_contraction_cuda_reducemax_eval(P, V_in, policy, reward_car_moved, ga
 
 @cuda.jit(void(float32[:]))    
 def jcr_pi_contraction_cuda_reducemax_dreduce(d):         
-    shared_d = cuda.shared.array(2048, dtype=float32) # corresponds to MAX_N_STATES
+    shared_d = cuda.shared.array(1024, dtype=float32) # corresponds to MAX_N_STATES
     tpb = cuda.blockDim.x
     job_blocks = d.shape[0]
     ept = (job_blocks + tpb - 1) // tpb 
@@ -673,7 +673,7 @@ def jcr_pi_contraction_cuda_reducemax_improve(P, V, reward_car_moved, gamma, pol
 
 @cuda.jit(void(int32[:]))    
 def jcr_pi_contraction_cuda_reducemax_psreduce(policy_stable):         
-    shared_policy_stable = cuda.shared.array(2048, dtype=int32) # corresponds to MAX_N_STATES
+    shared_policy_stable = cuda.shared.array(1024, dtype=int32) # corresponds to MAX_N_STATES
     tpb = cuda.blockDim.x
     job_blocks = policy_stable.shape[0]
     ept = (job_blocks + tpb - 1) // tpb 
