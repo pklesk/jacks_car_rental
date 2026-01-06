@@ -85,10 +85,11 @@ def gpu_warmup(dev_P):
         d_policy, d_V, d_P_tiny, 
         gamma=0.1, eps=0.1, tolerance_v=0.1, 
         states=jcr.STATES[:1], actions=jcr.ACTIONS[:1], 
-        rewards_rental=jcr.REWARDS_RENTAL[:1, :1], reward_car_moved=jcr.REWARD_CAR_MOVED,
+        rewards_rental=jcr.REWARDS_RENTAL[:1], reward_car_moved=jcr.REWARD_CAR_MOVED,
         lazy_stop_check=1, tpb=32, plots=False
     )
     cuda.synchronize()
+    print("[gpu warmup done]")
             
 # --------------------------------------------------------------------------------------------------------------------------------
 # MAIN
@@ -133,7 +134,7 @@ if __name__ == "__main__":
     if P is None:
         sys.exit()
     print(line_separator)
-    gpu_warmup()
+    gpu_warmup(dev_P)
     
     np.random.seed(SEED)
     V_in = np.zeros(jcr.STATES.shape[0], dtype=np.float32)
