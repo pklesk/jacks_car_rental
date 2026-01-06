@@ -17,7 +17,7 @@ from matplotlib import pyplot as plt
 from scipy.ndimage import label
 
 # global settings
-MAX_CARS_AT_LOC = 20
+MAX_CARS_AT_LOC = 10
 MAX_CARS_MOVED = 5
 REWARD_CAR_RENTED = np.float32(10.0)
 REWARD_CAR_MOVED = np.float32(-2.0)
@@ -37,11 +37,12 @@ REWARDS_RENTAL = REWARD_CAR_RENTED * np.arange(2 * MAX_CARS_AT_LOC + 1, dtype=np
 MDP_PATH = f"../mdp_joint_distrs/mdp_joint_distr_jcr_{MAX_CARS_AT_LOC}_{MAX_CARS_MOVED}.pkl"
 
 # CUDA defaults
-DEFAULT_TPB = 512 # cuda.get_current_device().MAX_THREADS_PER_BLOCK // 2 
+DEFAULT_MAX_TPB = cuda.get_current_device().MAX_THREADS_PER_BLOCK // 2 
+DEFAULT_TPB = 64 
 DEFAULT_LAZY_STOP_CHECK = 5
 
 # constraints
-MAX_N_STATES = 2048
+MAX_N_STATES = 1024
 assert (MAX_CARS_AT_LOC + 1)**2 <= MAX_N_STATES, f"Maximum number of states {MAX_N_STATES} exceeded due to too large maximum of cars at location set to: {MAX_CARS_AT_LOC}."
 
 def make_jcr_mdp_joint_distr(states=STATES, actions=ACTIONS, rewards_rental=REWARDS_RENTAL, request_distrs_at_locs=REQUEST_DISTRS_AT_LOCS, return_distrs_at_locs=RETURN_DISTRS_AT_LOCS, return_as_float32_array=True):
@@ -243,8 +244,8 @@ def jcr_pi_contraction_cuda_atomicmax_eval(P, V_in, policy, reward_car_moved, ga
     const_states = cuda.const.array_like(STATES)
     const_actions = cuda.const.array_like(ACTIONS)
     const_rewards_rental = cuda.const.array_like(REWARDS_RENTAL)
-    shared_v_new = cuda.shared.array(512, dtype=float32) # corresponds to DEFAULT_TPB
-    shared_v_in = cuda.shared.array(2048, dtype=float32) # corresponds to MAX_N_STATES
+    shared_v_new = cuda.shared.array(512, dtype=float32) # corresponds to DEFAULT_MAX_TPB
+    shared_v_in = cuda.shared.array(1024, dtype=float32) # corresponds to MAX_N_STATES
     s_index = cuda.blockIdx.x
     t = cuda.threadIdx.x
     tpb = cuda.blockDim.x
@@ -286,8 +287,8 @@ def jcr_pi_contraction_cuda_atomicmax_improve(P, V, reward_car_moved, gamma, pol
     const_states = cuda.const.array_like(STATES)
     const_actions = cuda.const.array_like(ACTIONS)
     const_rewards_rental = cuda.const.array_like(REWARDS_RENTAL)
-    shared_q_new = cuda.shared.array(512, dtype=float32) # corresponds to DEFAULT_TPB
-    shared_v_in = cuda.shared.array(2048, dtype=float32) # corresponds to MAX_N_STATES
+    shared_q_new = cuda.shared.array(512, dtype=float32) # corresponds to DEFAULT_MAX_TPB
+    shared_v_in = cuda.shared.array(1024, dtype=float32) # corresponds to MAX_N_STATES
     s_index = cuda.blockIdx.x
     t = cuda.threadIdx.x
     tpb = cuda.blockDim.x
@@ -407,7 +408,7 @@ def jcr_pi_contraction_cuda_atomicmaxglosten_eval(P, V_in, policy, reward_car_mo
     const_states = cuda.const.array_like(STATES)
     const_actions = cuda.const.array_like(ACTIONS)
     const_rewards_rental = cuda.const.array_like(REWARDS_RENTAL)    
-    shared_v_new = cuda.shared.array(512, dtype=float32) # corresponds to DEFAULT_TPB
+    shared_v_new = cuda.shared.array(512, dtype=float32) # corresponds to DEFAULT_MAX_TPB
     s_index = cuda.blockIdx.x
     t = cuda.threadIdx.x
     tpb = cuda.blockDim.x
@@ -443,7 +444,7 @@ def jcr_pi_contraction_cuda_atomicmaxglosten_improve(P, V, reward_car_moved, gam
     const_states = cuda.const.array_like(STATES)
     const_actions = cuda.const.array_like(ACTIONS)
     const_rewards_rental = cuda.const.array_like(REWARDS_RENTAL)
-    shared_q_new = cuda.shared.array(512, dtype=float32) # corresponds to DEFAULT_TPB
+    shared_q_new = cuda.shared.array(512, dtype=float32) # corresponds to DEFAULT_MAX_TPBX
     s_index = cuda.blockIdx.x
     t = cuda.threadIdx.x
     tpb = cuda.blockDim.x
@@ -557,8 +558,8 @@ def jcr_pi_contraction_cuda_reducemax_eval(P, V_in, policy, reward_car_moved, ga
     const_states = cuda.const.array_like(STATES)
     const_actions = cuda.const.array_like(ACTIONS)
     const_rewards_rental = cuda.const.array_like(REWARDS_RENTAL)
-    shared_v_new = cuda.shared.array(512, dtype=float32) # corresponds to DEFAULT_TPB
-    shared_v_in = cuda.shared.array(2048, dtype=float32) # corresponds to MAX_N_STATES
+    shared_v_new = cuda.shared.array(512, dtype=float32) # corresponds to DEFAULT_MAX_TPB
+    shared_v_in = cuda.shared.array(1024, dtype=float32) # corresponds to MAX_N_STATES
     s_index = cuda.blockIdx.x
     t = cuda.threadIdx.x
     tpb = cuda.blockDim.x
@@ -624,8 +625,8 @@ def jcr_pi_contraction_cuda_reducemax_improve(P, V, reward_car_moved, gamma, pol
     const_states = cuda.const.array_like(STATES)
     const_actions = cuda.const.array_like(ACTIONS)
     const_rewards_rental = cuda.const.array_like(REWARDS_RENTAL)
-    shared_q_new = cuda.shared.array(512, dtype=float32) # corresponds to DEFAULT_TPB
-    shared_v_in = cuda.shared.array(2048, dtype=float32) # corresponds to MAX_N_STATES
+    shared_q_new = cuda.shared.array(512, dtype=float32) # corresponds to DEFAULT_MAX_TPB
+    shared_v_in = cuda.shared.array(1024, dtype=float32) # corresponds to MAX_N_STATES
     s_index = cuda.blockIdx.x
     t = cuda.threadIdx.x
     tpb = cuda.blockDim.x
@@ -721,11 +722,11 @@ def jcr_pi_contraction_cuda_gridsync(policy_in, V_in, dev_P,
         t2_discover = time.time()
         if verbose:
             print(f"[discovered max_bpg_gridsync: {max_bpg_gridsync}; time: {t2_discover - t1_discover} s]")
-    bpg_eval = max_bpg_gridsync
+    bpg_eval = min(max_bpg_gridsync, states.shape[0])
     bpg_improve = states.shape[0]
     if verbose:
         spb = (states.shape[0] + bpg_eval - 1) // bpg_eval
-        print(f"[kernel eval -> bpg: {bpg_eval} (cooperative group), tpb: {tpb}, spb: {spb}]")
+        print(f"[kernel eval -> bpg: {bpg_eval} (max_bpg_gridsync or number of states if smaller), tpb: {tpb}, spb: {spb}]")
         print(f"[kernel improve -> bpg: {bpg_improve} (implied by number of states), tpb: {tpb}]")
     k_main = 0       
     k_eval_total_so_far = 0
@@ -784,8 +785,8 @@ def jcr_pi_contraction_cuda_gridsync_eval(P, V_in, policy, reward_car_moved, gam
     const_states = cuda.const.array_like(STATES)
     const_actions = cuda.const.array_like(ACTIONS)
     const_rewards_rental = cuda.const.array_like(REWARDS_RENTAL)    
-    shared_v_new = cuda.shared.array(512, dtype=float32) # corresponds to DEFAULT_TPB
-    shared_v_in = cuda.shared.array(2048, dtype=float32) # corresponds to MAX_N_STATES
+    shared_v_new = cuda.shared.array(512, dtype=float32) # corresponds to DEFAULT_MAX_TPB
+    shared_v_in = cuda.shared.array(1024, dtype=float32) # corresponds to MAX_N_STATES
     bpg = cuda.gridDim.x
     n_states = const_states.shape[0]
     spb = (n_states + bpg - 1) // bpg # states per block
@@ -856,8 +857,8 @@ def jcr_pi_contraction_cuda_gridsync_improve(P, V, reward_car_moved, gamma, poli
     const_states = cuda.const.array_like(STATES)
     const_actions = cuda.const.array_like(ACTIONS)
     const_rewards_rental = cuda.const.array_like(REWARDS_RENTAL)
-    shared_q_new = cuda.shared.array(512, dtype=float32) # corresponds to DEFAULT_TPB
-    shared_v_in = cuda.shared.array(2048, dtype=float32) # corresponds to MAX_N_STATES
+    shared_q_new = cuda.shared.array(512, dtype=float32) # corresponds to DEFAULT_MAX_TPB
+    shared_v_in = cuda.shared.array(1024, dtype=float32) # corresponds to MAX_N_STATES
     s_index = cuda.blockIdx.x
     t = cuda.threadIdx.x
     tpb = cuda.blockDim.x
