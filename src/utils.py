@@ -110,7 +110,6 @@ def hash_function(s):
 def hash_str(params, digits):
     return str((hash_function(str(params)) & ((1 << 32) - 1)) % 10**digits).rjust(digits, "0") 
 
-# TODO (adjust hash str to jcr)
 def experiment_hash_str(experiment_info, c_props, g_props, all_hs_digits=10, experiment_hs_digits=5, env_hs_digits=3):
     """Returns a hash string for an experiment, based on its settings and properties."""
     experiment_hs =  hash_str(experiment_info, digits=experiment_hs_digits)    
@@ -119,16 +118,13 @@ def experiment_hash_str(experiment_info, c_props, g_props, all_hs_digits=10, exp
     all_info = {**experiment_info, **env_props}
     all_hs = hash_str(all_info, digits=all_hs_digits)
     approaches_flags_str = ""
-    suffix = f"{experiment_info['SEED']};{experiment_info['WF_FOURIER_N']};{experiment_info['WF_FOURIER_AMPLITUDE']};{experiment_info['WF_BORDER_N']};"
-    suffix += f"{experiment_info['NUMPY_SINGLE_THREAD']};{experiment_info['CONTRACTION_EPS']:.1e};{experiment_info['CONTRACTION_PLOTS']};"
-    suffix += f"{experiment_info['MC_EXAMPLE_PLOT']};{experiment_info['MC_EXAMPLE_PLOT_SAMPLES']};"
+    suffix = f"{experiment_info['SEED']};{experiment_info['JCR_MAX_CARS_AT_LOC']};{experiment_info['JCR_MAX_CARS_MOVED']};{experiment_info['JCR_REWARD_CAR_RENTED']};{experiment_info['JCR_REWARD_CAR_MOVED']};"
+    suffix += f"{experiment_info['JCR_REQUEST_POISSON_LAMBDAS_AT_LOC']};{experiment_info['JCR_RETURN_POISSON_LAMBDAS_AT_LOC']};"    
+    suffix += f"{experiment_info['NUMPY_SINGLE_THREAD']};{experiment_info['GAMMA']};{experiment_info['EPS']:.1e};{experiment_info['TOLERANCE_V']:.1e};{experiment_info['PLOTS']};"
+    suffix = suffix.replace(" ", "")
     for key in experiment_info.keys():
-        if key.startswith("sfwf_contraction_"):
+        if key.startswith("jcr_pi_contraction_"):
             approaches_flags_str += "T" if experiment_info[key][0] else "F"
-    approaches_flags_str += ";"  
-    for key in experiment_info.keys():
-        if key.startswith("sfwf_mc_"):
-            approaches_flags_str += "T" if experiment_info[key][0] else "F"            
     suffix += f"{approaches_flags_str}"
     hs = f"{all_hs}_{experiment_hs}_{env_hs}_[{suffix}]"
     return hs
