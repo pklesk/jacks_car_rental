@@ -76,6 +76,19 @@ def approaches_info(approaches):
         else:
             info[key] = (approaches[key][0], approaches[key][1].__name__, 0, {})
     return info
+
+def gpu_warmup(dev_P):
+    d_policy = np.zeros(1, dtype=np.int16)
+    d_V = np.zeros(1, dtype=np.float32)
+    d_P_tiny = dev_P[:1, :1, :1, :1]
+    jcr.jcr_pi_contraction_cuda_atomicmax(
+        d_policy, d_V, d_P_tiny, 
+        gamma=0.1, eps=0.1, tolerance_v=0.1, 
+        states=jcr.STATES[:1], actions=jcr.ACTIONS[:1], 
+        rewards_rental=jcr.REWARDS_RENTAL[:1, :1], reward_car_moved=jcr.REWARD_CAR_MOVED,
+        lazy_stop_check=1, tpb=32, plots=False
+    )
+    cuda.synchronize()
             
 # --------------------------------------------------------------------------------------------------------------------------------
 # MAIN
@@ -120,6 +133,7 @@ if __name__ == "__main__":
     if P is None:
         sys.exit()
     print(line_separator)
+    gpu_warmup()
     
     np.random.seed(SEED)
     V_in = np.zeros(jcr.STATES.shape[0], dtype=np.float32)
@@ -127,7 +141,7 @@ if __name__ == "__main__":
     policy_in = np.random.randint(-jcr.MAX_CARS_MOVED, jcr.MAX_CARS_MOVED + 1, size=jcr.STATES.shape[0], dtype=np.int16) + jcr.MAX_CARS_MOVED
     print(f"RANDOM INITIAL POLICY [shape: {policy_in.shape}]:\n{jcr.ACTIONS[policy_in]}")    
     if PLOTS:
-        jcr.plot_value_and_policy_jcr(V_in, policy_in)
+        jcr.plot_value_and_policy_jcr(V_in, policy_in)    
                 
     # about to execute policy iteration contraction approaches
     pi_contraction_ref_approach_name = None
