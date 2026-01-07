@@ -17,8 +17,8 @@ from matplotlib import pyplot as plt
 from scipy.ndimage import label
 
 # global settings
-MAX_CARS_AT_LOC = 30
-MAX_CARS_MOVED = 10
+MAX_CARS_AT_LOC = 10
+MAX_CARS_MOVED = 5
 REWARD_CAR_RENTED = np.float32(10.0)
 REWARD_CAR_MOVED = np.float32(-2.0)
 REQUEST_POISSON_LAMBDAS_AT_LOC = [3.0, 4.0]
@@ -332,13 +332,13 @@ def jcr_pi_contraction_cuda_atomicmax_improve(P, V, reward_car_moved, gamma, pol
         policy[s_index] = a_max_index
         cuda.atomic.min(policy_stable, 0, int8(0))
     
-def jcr_pi_contraction_cuda_atomicmaxglosten(policy_in, V_in, dev_P,                                             
+def jcr_pi_contraction_cuda_atomicmaxplain(policy_in, V_in, dev_P,                                             
                                              gamma, eps, tolerance_v,
                                              states=STATES, actions=ACTIONS, rewards_rental=REWARDS_RENTAL, reward_car_moved=REWARD_CAR_MOVED,                                              
                                              lazy_stop_check=DEFAULT_LAZY_STOP_CHECK, tpb=DEFAULT_TPB,
                                              verbose=True, verbose_iters=False, plots=False):
     if verbose:
-        print(f"JCR PI CONTRACTION CUDA ATOMICMAXGLOSTEN... [gamma: {gamma}, eps: {eps}, tolerance_v: {tolerance_v}, lazy_stop_check: {lazy_stop_check}, tpb: {tpb}]")
+        print(f"JCR PI CONTRACTION CUDA ATOMICMAXPLAIN... [gamma: {gamma}, eps: {eps}, tolerance_v: {tolerance_v}, lazy_stop_check: {lazy_stop_check}, tpb: {tpb}]")
     t1 = time.time()
     history_for_plots = []
     if verbose_iters and plots:
@@ -363,7 +363,7 @@ def jcr_pi_contraction_cuda_atomicmaxglosten(policy_in, V_in, dev_P,
         while True:
             t1_eval = time.time()
             jcr_pi_contraction_cuda_atomicmax_dreset[1, 1](dev_d)
-            jcr_pi_contraction_cuda_atomicmaxglosten_eval[bpg, tpb](dev_P, dev_V_in, dev_policy, reward_car_moved, gamma, dev_V_out, dev_d)            
+            jcr_pi_contraction_cuda_atomicmaxplain_eval[bpg, tpb](dev_P, dev_V_in, dev_policy, reward_car_moved, gamma, dev_V_out, dev_d)            
             t2_eval = time.time()
             k_eval += 1
             tmp = dev_V_in # ping-pong trick
@@ -379,7 +379,7 @@ def jcr_pi_contraction_cuda_atomicmaxglosten(policy_in, V_in, dev_P,
                     break
         t1_impr = time.time()
         jcr_pi_contraction_cuda_atomicmax_psreset[1, 1](dev_policy_stable)                    
-        jcr_pi_contraction_cuda_atomicmaxglosten_improve[bpg, tpb](dev_P, dev_V_in, reward_car_moved, gamma, dev_policy, dev_policy_stable)            
+        jcr_pi_contraction_cuda_atomicmaxplain_improve[bpg, tpb](dev_P, dev_V_in, reward_car_moved, gamma, dev_policy, dev_policy_stable)            
         policy_stable = dev_policy_stable.copy_to_host()[0]
         policy_stable = True if policy_stable == 1 else False
         cuda.synchronize()
@@ -400,11 +400,11 @@ def jcr_pi_contraction_cuda_atomicmaxglosten(policy_in, V_in, dev_P,
     cuda.synchronize
     t2 = time.time()
     if verbose:
-        print(f"JCR PI CONTRACTION CUDA ATOMICMAXGLOSTEN DONE. [d_inf: {str(d[0])}, main iterations: {k_main}, evaluation iterations total: {k_eval_total}, time: {t2 - t1} s]")    
+        print(f"JCR PI CONTRACTION CUDA ATOMICMAXPLAIN DONE. [d_inf: {str(d[0])}, main iterations: {k_main}, evaluation iterations total: {k_eval_total}, time: {t2 - t1} s]")    
     return policy_out, V_out, d[0], k_main, k_eval_total, t2 - t1, history_for_plots
 
 @cuda.jit(void(float32[:,:,:,:], float32[:], int16[:], float32, float32, float32[:], float32[:]))
-def jcr_pi_contraction_cuda_atomicmaxglosten_eval(P, V_in, policy, reward_car_moved, gamma, V_out, d):
+def jcr_pi_contraction_cuda_atomicmaxplain_eval(P, V_in, policy, reward_car_moved, gamma, V_out, d):
     const_states = cuda.const.array_like(STATES)
     const_actions = cuda.const.array_like(ACTIONS)
     const_rewards_rental = cuda.const.array_like(REWARDS_RENTAL)    
@@ -440,7 +440,7 @@ def jcr_pi_contraction_cuda_atomicmaxglosten_eval(P, V_in, policy, reward_car_mo
         V_out[s_index] = v_new
         
 @cuda.jit(void(float32[:,:,:,:], float32[:], float32, float32, int16[:], int32[:]))
-def jcr_pi_contraction_cuda_atomicmaxglosten_improve(P, V, reward_car_moved, gamma, policy, policy_stable):
+def jcr_pi_contraction_cuda_atomicmaxplain_improve(P, V, reward_car_moved, gamma, policy, policy_stable):
     const_states = cuda.const.array_like(STATES)
     const_actions = cuda.const.array_like(ACTIONS)
     const_rewards_rental = cuda.const.array_like(REWARDS_RENTAL)
