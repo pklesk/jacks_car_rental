@@ -17,7 +17,7 @@ from matplotlib import pyplot as plt
 from scipy.ndimage import label
 
 # global settings
-MAX_CARS_AT_LOC = 30
+MAX_CARS_AT_LOC = 20
 MAX_CARS_MOVED = 5
 REWARD_CAR_RENTED = np.float32(10.0)
 REWARD_CAR_MOVED = np.float32(-2.0)
@@ -907,6 +907,8 @@ def plot_value_and_policy_jcr(V, policy, states=STATES, actions=ACTIONS, V_plot_
     if n_plots == 0:
         print("BOTH PLOTS ARE OFF.")
         return
+    axis_label_font_size = 12
+    title_font_size = 14
     figsize = (6 * n_plots, 6)
     fig = plt.figure(figsize=figsize)
     fig.canvas.manager.set_window_title("JACK'S CAR RENTAL")
@@ -923,12 +925,12 @@ def plot_value_and_policy_jcr(V, policy, states=STATES, actions=ACTIONS, V_plot_
             ax1.plot_surface(X, Y, V_to_plot, cmap="viridis", edgecolor="k", linewidth=0.5)
         else:
             ax1.plot_surface(X, Y, V_to_plot, color="white", edgecolor="k", linewidth=0.5, alpha=0.5)        
-        ax1.set_xlabel("CARS AT LOCATION 2")
-        ax1.set_ylabel("CARS AT LOCATION 1")
+        ax1.set_xlabel("CARS AT LOCATION 2", fontsize=axis_label_font_size)
+        ax1.set_ylabel("CARS AT LOCATION 1", fontsize=axis_label_font_size)
         ax1.set_yticks(np.arange(0, max_cars_at_loc + 1, 5)) 
         ax1.set_xticks(np.arange(0, max_cars_at_loc + 1, 5))
         if plot_titles_on: 
-            ax1.set_title("VALUE FUNCTION (V)")        
+            ax1.set_title("VALUE FUNCTION (V)", fontsize=title_font_size)        
         current_ax_idx += 1
     if policy_plot_on:
         ax2 = fig.add_subplot(1, n_plots, current_ax_idx)
@@ -946,10 +948,11 @@ def plot_value_and_policy_jcr(V, policy, states=STATES, actions=ACTIONS, V_plot_
                     ax2.text(x_mid, y_mid, f"{act:+d}" if act != 0 else "0", 
                              color="black", fontsize=8, fontweight="bold", 
                              ha="center", va="center")        
-        ax2.set_xlabel("CARS AT LOCATION 2")
-        ax2.set_ylabel("CARS AT LOCATION 1")
+        ax2.set_xlabel("CARS AT LOCATION 2", fontsize=axis_label_font_size)
+        ax2.set_ylabel("CARS AT LOCATION 1", fontsize=axis_label_font_size)
         ax2.set_yticks(np.arange(0, max_cars_at_loc + 1, 5)) 
         ax2.set_xticks(np.arange(0, max_cars_at_loc + 1, 5))
         if plot_titles_on: 
-            ax2.set_title("POLICY")
+            ax2.set_title("POLICY", fontsize=title_font_size)
+    plt.tight_layout(pad=2.0)
     plt.show()
