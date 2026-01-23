@@ -25,8 +25,8 @@ if __name__ == "__main__":
         "reducemax": "#00C957",                 
         "gridsync": "#FF0000"            
     }
-    title_str = "JACK'S CAR RENTAL: PLOT OF SPEED-UPS"
-    fig = plt.figure(figsize=(16, 8))
+    title_str = "JACK'S CAR RENTAL: LOG-LOG PLOT OF SPEED-UPS"
+    fig = plt.figure(figsize=(16, 7))
     try:
         fig.canvas.manager.set_window_title(title_str)
     except AttributeError:

@@ -118,7 +118,7 @@ def jcr_pi_contraction_cpu_numpy(policy_in, V_in, P,
                 V_dst[s_index] = v_new
             d = max(np.abs(V_src - V_dst))
             k_eval += 1
-            tmp = V_src # ping-pong trick
+            tmp = V_src # ping-pong
             V_src = V_dst
             V_dst = tmp                 
             t2_eval = time.time()
