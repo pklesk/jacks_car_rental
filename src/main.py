@@ -197,7 +197,7 @@ if __name__ == "__main__":
             if PLOTS: 
                 method_name = approach_function.__name__
                 overal_title = f"COMPUTED BY: {method_name}"
-                overal_title += f"\n[$d_{{\\infty}}$: {d:.3e}, main iters.: {k_main}, evaluation total iters.: {k_eval_total}]"
+                overal_title += f"\n[$d_{{\\infty}}$: {d:.3e}, main iters.: {k_main}, evaluation iters. total: {k_eval_total}]"
                 jcr.plot_value_and_policy_jcr(V_out, policy_out, overall_title=overal_title)
                                                                                   
     print(line_separator)
