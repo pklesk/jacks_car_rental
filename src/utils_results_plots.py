@@ -26,7 +26,7 @@ if __name__ == "__main__":
         "gridsync": "#FF0000"            
     }
     title_str = "JACK'S CAR RENTAL: LOG-LOG PLOT OF SPEED-UPS"
-    fig = plt.figure(figsize=(16, 7))
+    fig = plt.figure(figsize=(16, 5))
     try:
         fig.canvas.manager.set_window_title(title_str)
     except AttributeError:
@@ -37,7 +37,7 @@ if __name__ == "__main__":
     first_x = sizes[0]
     
     LABEL_FONT_SIZE = 8.5      
-    LEGEND_FONT_SIZE = 11.5    
+    LEGEND_FONT_SIZE = 10.5    
     AXIS_LABEL_SIZE = 15.0     
     TITLE_SIZE = 20.0          
     TICK_LABEL_SIZE = 10.0     
@@ -107,7 +107,7 @@ if __name__ == "__main__":
                linewidth=1, alpha=0.2, zorder=2)
     
     plt.legend(loc="lower right", fontsize=LEGEND_FONT_SIZE, framealpha=0.9, 
-               ncol=1, handlelength=3.0, bbox_to_anchor=(0.99, 0.12))
+               ncol=1, handlelength=3.0, bbox_to_anchor=(0.99, 0.12), labelspacing=0.2)
     
     plt.tight_layout(pad=1.0)
     plt.show()

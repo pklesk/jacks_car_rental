@@ -158,7 +158,88 @@ def jcr_pi_contraction_cpu_numpy(policy_in, V_in, P,
     t2 = time.time()
     if verbose:
         print(f"JCR PI CONTRACTION CPU NUMPY DONE. [d_inf: {str(d)}, main iterations: {k_main}, evaluation iterations total: {k_eval_total}, time: {t2 - t1} s]")
-    return policy_out, V_out, d, k_main, k_eval_total, t2 - t1, history_for_plots                                     
+    return policy_out, V_out, d, k_main, k_eval_total, t2 - t1, history_for_plots    
+
+def jcr_pi_contraction_cpu_numpy_blas_style(policy_in, V_in, P, 
+                                             gamma, eps, tolerance_v,                                              
+                                             states=STATES, actions=ACTIONS, rewards_rental=REWARDS_RENTAL, reward_car_moved=REWARD_CAR_MOVED,
+                                             verbose=True, verbose_iters=False, plots=False):
+    if verbose:
+        print(f"JCR PI CONTRACTION CPU NUMPY (BLAS STYLE)... [gamma: {gamma}, eps: {eps}]")
+    
+    t1 = time.time()
+    n_states = states.shape[0]
+    n_actions = actions.shape[0]
+    s_indices = np.arange(n_states)
+    
+    policy = np.copy(policy_in)
+    V_curr = np.copy(V_in)
+    
+    k_main = 0
+    k_eval_total = 0
+    history_for_plots = []
+
+    # PRE-CALCULATION: Obliczamy macierz nagród R(s, a) raz dla wszystkich stanów i akcji
+    # R_sa shape: (n_states, n_actions)
+    # R_sa[s, a] = r_moved(a) + sum_{r, s'} P(s, a, r, s') * reward_rental[r]
+    r_moved_all = np.abs(actions) * reward_car_moved # (n_actions,)
+    
+    # Sumujemy P po s', aby dostać P(s, a, r)
+    P_sar = P.sum(axis=3) # (n_states, n_actions, n_rewards)
+    expected_rental_all = P_sar.dot(rewards_rental) # (n_states, n_actions)
+    R_sa = r_moved_all + expected_rental_all
+
+    while True:
+        # 1. PRZYGOTOWANIE MODELU DLA AKTUALNEJ POLITYKI
+        R_pi = R_sa[s_indices, policy]
+        P_pi = P[s_indices, policy].sum(axis=1) # (n_states, n_states)
+
+        # 2. PĘTLA EWALUACJI POLITYKI
+        k_eval = 0
+        while True:
+            V_next = R_pi + gamma * P_pi.dot(V_curr)
+            d = np.max(np.abs(V_next - V_curr))
+            V_curr = V_next
+            k_eval += 1
+            if d <= eps:
+                break
+        
+        k_eval_total += k_eval
+        
+        # 3. POPRAWA POLITYKI (Policy Improvement) - Styl BLAS
+        # Szukamy argmax_a [ R(s, a) + gamma * sum_{s'} P(s, a, s') * V(s') ]
+        # P_sa_s_prime: (n_states, n_actions, n_states)
+        P_sa_s_prime = P.sum(axis=2)
+        
+        # Q_sa: (n_states, n_actions)
+        # Obliczamy iloczyn macierzowy dla każdego stanu i akcji
+        # Wykorzystujemy einsum dla maksymalnej wydajności w NumPy
+        Q_sa = R_sa + gamma * np.einsum('san,n->sa', P_sa_s_prime, V_curr)
+        
+        new_policy = np.argmax(Q_sa, axis=1).astype(np.int16)
+        
+        policy_stable = np.array_equal(policy, new_policy)
+        
+        if verbose_iters:
+            print(f"[main iteration {k_main + 1}] eval_iters: {k_eval}, d_inf: {d:.6f}, stable: {policy_stable}")
+
+        if plots:
+            history_for_plots.append((np.copy(V_curr), np.copy(new_policy)))
+
+        policy = new_policy
+        k_main += 1
+
+        # Warunek stopu PI
+        if policy_stable or (k_eval == 1 and d <= tolerance_v):
+            break
+
+    t2 = time.time()
+    time_total = t2 - t1
+    
+    if verbose:
+        print(f"JCR PI CONTRACTION CPU NUMPY (BLAS STYLE) DONE. [time: {time_total:.4f} s, main_iters: {k_main}]")
+    
+    return policy, V_curr, d, k_main, k_eval_total, time_total, history_for_plots                              
     
 def jcr_pi_contraction_cuda_atomicmax(policy_in, V_in, dev_P,                                             
                                       gamma, eps, tolerance_v,
@@ -423,7 +504,7 @@ def jcr_pi_contraction_cuda_atomicmaxplain_eval(P, V_in, policy, reward_car_move
         next_state_index = t
         for _ in range(nspt):
             if next_state_index < n_states:             
-                t_part_sum += P[s_index, a_index, r_index, next_state_index] * (r + gamma * V_in[next_state_index])        
+                t_part_sum += P[s_index, a_index, r_index, next_state_index] * (r + gamma * V_in[next_state_index])
             next_state_index += tpb
     shared_v_new[t] = t_part_sum
     cuda.syncthreads()
@@ -638,7 +719,7 @@ def jcr_pi_contraction_cuda_reducemax_improve(P, V, reward_car_moved, gamma, pol
         if next_state_index < n_states:
             shared_v_in[next_state_index] = V[next_state_index]
         next_state_index += tpb 
-    cuda.syncthreads()      
+    cuda.syncthreads()
     a_so_far = policy[s_index] 
     q_max = -float32(inf)
     a_max_index = int16(-1) 
