@@ -17,7 +17,7 @@ from matplotlib import pyplot as plt
 from scipy.ndimage import label
 
 # global settings
-MAX_CARS_AT_LOC = 20
+MAX_CARS_AT_LOC = 10
 MAX_CARS_MOVED = 5
 REWARD_CAR_RENTED = np.float32(10.0)
 REWARD_CAR_MOVED = np.float32(-2.0)
@@ -219,14 +219,16 @@ def jcr_pi_cpu_numba_parallel_eval(P, V_src, policy, states, actions, rewards_re
                 reward_cars_moved = np.abs(actions[a_index]) * reward_car_moved
                 v_new = 0.0
                 for r_index in range(rewards_rental.shape[0]):
-                    r = reward_cars_moved + rewards_rental[r_index]
-                    v_new += P[s_index, a_index, r_index].dot(r + gamma * V_src)             
+                    r = reward_cars_moved + rewards_rental[r_index]                    
+                    # v_new += P[s_index, a_index, r_index].dot(r + gamma * V_src) # fast-convergence version: allows LLVM to use high-precision registers (e.g. 80-bit/FMA) for intermediate accumulation, leading to significantly fewer iterations                    
+                    v_summand = P[s_index, a_index, r_index].dot(r + gamma * V_src) 
+                    v_new = np.float32(v_new + v_summand) # handicapped version: forces immediate narrowing to 32-bit float after each addition; this breaks register residency of high-precision bits and matches numpy's/CUDA convergence rate
                 V_dst[s_index] = v_new
             d[0] = np.max(np.abs(V_src - V_dst))
             k_eval += 1
             tmp = V_src # ping-pong
             V_src = V_dst
-            V_dst = tmp                 
+            V_dst = tmp  
             if verbose_iters:
                 print("[policy evaluation iteration", k_eval, "[d_inf:", d[0], ", time: n/a]")
             if d[0] <= eps:
@@ -249,7 +251,6 @@ def jcr_pi_cpu_numba_parallel_improve(P, V_src, policy, states, actions, rewards
         policy[s_index] = np.argmax(qs)
         if policy[s_index] != a_so_far:
             policy_stable[0] = False 
-
     
 def jcr_pi_contraction_cuda_atomicmax(policy_in, V_in, dev_P,                                             
                                       gamma, eps, tolerance_v,
