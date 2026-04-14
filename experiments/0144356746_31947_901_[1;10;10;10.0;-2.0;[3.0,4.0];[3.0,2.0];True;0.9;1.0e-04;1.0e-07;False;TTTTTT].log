@@ -1,0 +1,609 @@
+JACK'S CAR RENTAL STARTING...
+HASH STRING: 0144356746_31947_901_[1;10;10;10.0;-2.0;[3.0,4.0];[3.0,2.0];True;0.9;1.0e-04;1.0e-07;False;TTTTTT]
+============================================================================================================================================================================================================================================================
+EXPERIMENT INFO:
+{
+  SEED: 1,
+  JCR_MAX_CARS_AT_LOC: 10,
+  JCR_MAX_CARS_MOVED: 10,
+  JCR_REWARD_CAR_RENTED: 10.0,
+  JCR_REWARD_CAR_MOVED: -2.0,
+  JCR_REQUEST_POISSON_LAMBDAS_AT_LOC: [3.0, 4.0],
+  JCR_RETURN_POISSON_LAMBDAS_AT_LOC: [3.0, 2.0],
+  NUMPY_SINGLE_THREAD: True,
+  GAMMA: 0.9,
+  EPS: 0.0001,
+  TOLERANCE_V: 1e-07,
+  PLOTS: False,
+  jcr_pi_contraction_cpu_numpy: (True, 'jcr_pi_contraction_cpu_numpy', 10, {}),
+  jcr_pi_contraction_cpu_numba_parallel: (True, 'jcr_pi_contraction_cpu_numba_parallel', 10, {}),
+  jcr_pi_contraction_cuda_atomicmax: (True, 'jcr_pi_contraction_cuda_atomicmax', 10, {'lazy_stop_check': 5, 'tpb': 64}),
+  jcr_pi_contraction_cuda_atomicmaxplain: (True, 'jcr_pi_contraction_cuda_atomicmaxplain', 10, {'lazy_stop_check': 5, 'tpb': 64}),
+  jcr_pi_contraction_cuda_reducemax: (True, 'jcr_pi_contraction_cuda_reducemax', 10, {'lazy_stop_check': 5, 'tpb': 64}),
+  jcr_pi_contraction_cuda_gridsync: (True, 'jcr_pi_contraction_cuda_gridsync', 10, {'tpb': 64})
+}
+============================================================================================================================================================================================================================================================
+CPU AND SYSTEM:
+{'cpu_name': 'AMD Ryzen 9 9950X 16-Core Processor',
+ 'os_machine': 'x86_64',
+ 'os_name': 'Linux 6.14.0-37-generic',
+ 'os_version': '#37~24.04.1-Ubuntu SMP PREEMPT_DYNAMIC Thu Nov 20 10:25:38 UTC '
+               '2',
+ 'ram_size': '123.4 GB'}
+GPU:
+{'async_engine_count': 2,
+ 'can_map_host_memory': 1,
+ 'compute_capability': ComputeCapability(major=12, minor=0),
+ 'cores_per_SM': 128,
+ 'cores_total': 21760,
+ 'max_block_dim_x': 1024,
+ 'max_block_dim_y': 1024,
+ 'max_block_dim_z': 64,
+ 'max_grid_dim_x': 2147483647,
+ 'max_grid_dim_y': 65535,
+ 'max_grid_dim_z': 65535,
+ 'max_shared_memory_per_block': 49152,
+ 'max_threads_per_block': 1024,
+ 'multiprocessor_count': 170,
+ 'name': 'NVIDIA GeForce RTX 5090',
+ 'pci_bus_id': 1,
+ 'pci_device_id': 0,
+ 'unified_addressing': 1,
+ 'warp_size': 32}
+============================================================================================================================================================================================================================================================
+JCR INFO:
+{
+  MAX_CARS_AT_LOC: 10,
+  MAX_CARS_MOVED: 10,
+  REWARD_CAR_RENTED: 10.0,
+  REWARD_CAR_MOVED: -2.0,
+  REQUEST_POISSON_LAMBDAS_AT_LOC: [3.0, 4.0],
+  RETURN_POISSON_LAMBDAS_AT_LOC: [3.0, 2.0]
+}
+JCR MDP JOINT DISTRIBUTION...
+UNPICKLE OBJECTS... [from file: ../mdp_joint_distrs/mdp_joint_distr_jcr_10_10.pkl]
+UNPICKLE OBJECTS DONE. [time: 0.004900455474853516 s]
+JCR MDP JOINT DISTRIBUTION READY. [shape: (121, 21, 21, 121), entries: 6456681, type: float32, 0.02 GiB copied to device (gpu) in: 0.0025920867919921875 s]
+============================================================================================================================================================================================================================================================
+V FOR INITIAL POLICY ZEROED. [shape: (121,)]
+RANDOM INITIAL POLICY [shape: (121,)]:
+[ -5  -9   1  -3   2  -3  -2  -3  -1   2   1  -5  -5  -9   5   7 -10   6
+   6  -7  -9  -4   2   4  -3   4   3  10  -4   8   8   5  10  -3   6  -5
+   8   8   0  10  -2   1  -4   0   2  -5  -8   4   5   8  -7  -6  10   1
+  -1  -4   7  -8   6   0 -10  -6   3  -1  -1  -1  -3  -9  -9  -5  -9 -10
+   7  -6   7  -8  -2  -5 -10   3   9  -4   5   0   0   3  -2  -3   3  -3
+   9  -7   3  -4   7   7   0  -7   8  -6  -5   7  -5   1  -9   2  -3  10
+   0   6   3   4   9  -1  -1   8 -10   5  -4 -10  -6]
+============================================================================================================================================================================================================================================================
+PI CONTRACTION APPROACH 1: jcr_pi_contraction_cpu_numpy...
+---
+REPETITION: 1/10:
+JCR PI CONTRACTION CPU NUMPY... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07]
+JCR PI CONTRACTION CPU NUMPY DONE. [d_inf: 9.1552734e-05, main iterations: 4, evaluation iterations total: 408, time: 1.4383492469787598 s]
+---
+REPETITION: 2/10:
+JCR PI CONTRACTION CPU NUMPY... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07]
+JCR PI CONTRACTION CPU NUMPY DONE. [d_inf: 9.1552734e-05, main iterations: 4, evaluation iterations total: 408, time: 1.4429435729980469 s]
+---
+REPETITION: 3/10:
+JCR PI CONTRACTION CPU NUMPY... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07]
+JCR PI CONTRACTION CPU NUMPY DONE. [d_inf: 9.1552734e-05, main iterations: 4, evaluation iterations total: 408, time: 1.4402530193328857 s]
+---
+REPETITION: 4/10:
+JCR PI CONTRACTION CPU NUMPY... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07]
+JCR PI CONTRACTION CPU NUMPY DONE. [d_inf: 9.1552734e-05, main iterations: 4, evaluation iterations total: 408, time: 1.4381749629974365 s]
+---
+REPETITION: 5/10:
+JCR PI CONTRACTION CPU NUMPY... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07]
+JCR PI CONTRACTION CPU NUMPY DONE. [d_inf: 9.1552734e-05, main iterations: 4, evaluation iterations total: 408, time: 1.4440884590148926 s]
+---
+REPETITION: 6/10:
+JCR PI CONTRACTION CPU NUMPY... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07]
+JCR PI CONTRACTION CPU NUMPY DONE. [d_inf: 9.1552734e-05, main iterations: 4, evaluation iterations total: 408, time: 1.4408071041107178 s]
+---
+REPETITION: 7/10:
+JCR PI CONTRACTION CPU NUMPY... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07]
+JCR PI CONTRACTION CPU NUMPY DONE. [d_inf: 9.1552734e-05, main iterations: 4, evaluation iterations total: 408, time: 1.4441616535186768 s]
+---
+REPETITION: 8/10:
+JCR PI CONTRACTION CPU NUMPY... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07]
+JCR PI CONTRACTION CPU NUMPY DONE. [d_inf: 9.1552734e-05, main iterations: 4, evaluation iterations total: 408, time: 1.44234299659729 s]
+---
+REPETITION: 9/10:
+JCR PI CONTRACTION CPU NUMPY... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07]
+JCR PI CONTRACTION CPU NUMPY DONE. [d_inf: 9.1552734e-05, main iterations: 4, evaluation iterations total: 408, time: 1.4401013851165771 s]
+---
+REPETITION: 10/10:
+JCR PI CONTRACTION CPU NUMPY... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07]
+JCR PI CONTRACTION CPU NUMPY DONE. [d_inf: 9.1552734e-05, main iterations: 4, evaluation iterations total: 408, time: 1.4409315586090088 s]
+***
+SUMMARY:
+V OUT:
+[420.29092 430.26236 440.1136  449.7054  458.9079  467.64178 475.8748
+ 483.7346  491.44354 498.8336  505.9558  430.1612  440.13257 449.98334
+ 459.5741  468.77454 477.50537 485.73453 493.4435  500.83362 507.9558
+ 514.52    439.61908 449.59003 459.4389  469.02444 478.2155  486.93274
+ 495.14465 502.83365 509.9558  516.51996 522.9214  448.40207 458.372
+ 468.21588 477.7885  486.95602 495.63925 503.8089  511.44977 518.52
+ 524.9214  530.49634 456.41092 466.3791  476.21378 485.76254 494.8869
+ 503.50793 511.60083 519.1559  526.1359  532.44666 537.9348  464.3791
+ 474.21378 483.76257 492.98828 502.04718 510.5741  518.55145 525.9787
+ 532.82697 539.00885 544.37775 472.21375 481.76257 490.9883  500.04715
+ 508.57413 516.91815 524.74286 532.0021  538.67896 544.6962  549.9158
+ 479.7625  488.9883  498.04718 506.5741  514.9181  522.74286 530.2164
+ 537.2768  543.7511  549.575   554.6217  486.98825 496.04718 504.5741
+ 512.9181  520.74286 528.21643 535.27673 541.785   548.04224 553.65875
+ 558.52026 494.04718 502.57413 510.9181  518.74286 526.21643 533.2767
+ 539.785   546.04224 551.6588  556.925   561.60657 500.5741  508.9181
+ 516.7429  524.21643 531.27673 537.78503 544.0423  549.6588  554.9249
+ 559.6066  563.8891 ]
+POLICY OUT:
+[ 0  0  0  0  0  0  0 -1 -1 -2 -2  0  0  0  0  0  0  0  0 -1 -1 -2  0  0
+  0  0  0  0  0  0  0 -1 -1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
+  0  0  0  0  0  0  0  1  1  1  0  0  0  0  0  0  0  0  2  2  1  1  1  0
+  0  0  0  0  0  3  2  2  2  1  1  0  0  0  0  0  3  3  3  2  2  1  1  0
+  0  0  0  4  4  3  3  2  2  1  1  1  0  0  5  4  4  3  3  2  2  2  1  1
+  0]
+D_INF OF V VS REF: 0.0
+D_INF OF POLICY VS REF: 0
+D_INF (AT STOP) MEAN: 9.1552734375e-05
+MAIN ITERATIONS MEAN: 4.0
+EVAL ITERATIONS TOTAL MEAN: 408.0
+TIME MEAN: 1.4412153959274292 s, STD: 0.0020264871423646496 s, STD_%: 0.1%
+SPEEDUP VS REF: 1.0
+============================================================================================================================================================================================================================================================
+PI CONTRACTION APPROACH 2: jcr_pi_contraction_cpu_numba_parallel...
+---
+REPETITION: 1/10:
+JCR PI CONTRACTION CPU NUMBA PARALLEL... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07]
+JCR PI CONTRACTION CPU NUMBA PARALLEL DONE. [d_inf: [9.1552734e-05], main iterations: 4, evaluation iterations total: 408, time: 0.01476740837097168 s]
+---
+REPETITION: 2/10:
+JCR PI CONTRACTION CPU NUMBA PARALLEL... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07]
+JCR PI CONTRACTION CPU NUMBA PARALLEL DONE. [d_inf: [9.1552734e-05], main iterations: 4, evaluation iterations total: 408, time: 0.011382818222045898 s]
+---
+REPETITION: 3/10:
+JCR PI CONTRACTION CPU NUMBA PARALLEL... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07]
+JCR PI CONTRACTION CPU NUMBA PARALLEL DONE. [d_inf: [9.1552734e-05], main iterations: 4, evaluation iterations total: 408, time: 0.011156558990478516 s]
+---
+REPETITION: 4/10:
+JCR PI CONTRACTION CPU NUMBA PARALLEL... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07]
+JCR PI CONTRACTION CPU NUMBA PARALLEL DONE. [d_inf: [9.1552734e-05], main iterations: 4, evaluation iterations total: 408, time: 0.010999441146850586 s]
+---
+REPETITION: 5/10:
+JCR PI CONTRACTION CPU NUMBA PARALLEL... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07]
+JCR PI CONTRACTION CPU NUMBA PARALLEL DONE. [d_inf: [9.1552734e-05], main iterations: 4, evaluation iterations total: 408, time: 0.011058807373046875 s]
+---
+REPETITION: 6/10:
+JCR PI CONTRACTION CPU NUMBA PARALLEL... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07]
+JCR PI CONTRACTION CPU NUMBA PARALLEL DONE. [d_inf: [9.1552734e-05], main iterations: 4, evaluation iterations total: 408, time: 0.011005401611328125 s]
+---
+REPETITION: 7/10:
+JCR PI CONTRACTION CPU NUMBA PARALLEL... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07]
+JCR PI CONTRACTION CPU NUMBA PARALLEL DONE. [d_inf: [9.1552734e-05], main iterations: 4, evaluation iterations total: 408, time: 0.0109100341796875 s]
+---
+REPETITION: 8/10:
+JCR PI CONTRACTION CPU NUMBA PARALLEL... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07]
+JCR PI CONTRACTION CPU NUMBA PARALLEL DONE. [d_inf: [9.1552734e-05], main iterations: 4, evaluation iterations total: 408, time: 0.01125335693359375 s]
+---
+REPETITION: 9/10:
+JCR PI CONTRACTION CPU NUMBA PARALLEL... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07]
+JCR PI CONTRACTION CPU NUMBA PARALLEL DONE. [d_inf: [9.1552734e-05], main iterations: 4, evaluation iterations total: 408, time: 0.010935306549072266 s]
+---
+REPETITION: 10/10:
+JCR PI CONTRACTION CPU NUMBA PARALLEL... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07]
+JCR PI CONTRACTION CPU NUMBA PARALLEL DONE. [d_inf: [9.1552734e-05], main iterations: 4, evaluation iterations total: 408, time: 0.010874032974243164 s]
+***
+SUMMARY:
+V OUT:
+[420.29092 430.26236 440.1136  449.7054  458.9079  467.64178 475.8748
+ 483.7346  491.44354 498.8336  505.9558  430.1612  440.13257 449.98334
+ 459.5741  468.77454 477.50537 485.73453 493.4435  500.83362 507.9558
+ 514.52    439.61908 449.59003 459.4389  469.02444 478.2155  486.93274
+ 495.14465 502.83365 509.9558  516.51996 522.9214  448.40207 458.372
+ 468.21588 477.7885  486.95602 495.63925 503.8089  511.44977 518.52
+ 524.9214  530.49634 456.41092 466.3791  476.21378 485.76254 494.8869
+ 503.50793 511.60083 519.1559  526.1359  532.44666 537.9348  464.3791
+ 474.21378 483.76257 492.98828 502.04718 510.5741  518.55145 525.9787
+ 532.82697 539.00885 544.37775 472.21375 481.76257 490.9883  500.04715
+ 508.57413 516.91815 524.74286 532.0021  538.67896 544.6962  549.9158
+ 479.7625  488.9883  498.04718 506.5741  514.9181  522.74286 530.2164
+ 537.2768  543.7511  549.575   554.6217  486.98825 496.04718 504.5741
+ 512.9181  520.74286 528.21643 535.27673 541.785   548.04224 553.65875
+ 558.52026 494.04718 502.57413 510.9181  518.74286 526.21643 533.2767
+ 539.785   546.04224 551.6588  556.925   561.60657 500.5741  508.9181
+ 516.7429  524.21643 531.27673 537.78503 544.0423  549.6588  554.9249
+ 559.6066  563.8891 ]
+POLICY OUT:
+[ 0  0  0  0  0  0  0 -1 -1 -2 -2  0  0  0  0  0  0  0  0 -1 -1 -2  0  0
+  0  0  0  0  0  0  0 -1 -1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
+  0  0  0  0  0  0  0  1  1  1  0  0  0  0  0  0  0  0  2  2  1  1  1  0
+  0  0  0  0  0  3  2  2  2  1  1  0  0  0  0  0  3  3  3  2  2  1  1  0
+  0  0  0  4  4  3  3  2  2  1  1  1  0  0  5  4  4  3  3  2  2  2  1  1
+  0]
+D_INF OF V VS REF: 0.0
+D_INF OF POLICY VS REF: 0
+D_INF (AT STOP) MEAN: 9.1552734375e-05
+MAIN ITERATIONS MEAN: 4.0
+EVAL ITERATIONS TOTAL MEAN: 408.0
+TIME MEAN: 0.011434316635131836 s, STD: 0.001121335866831034 s, STD_%: 9.8%
+SPEEDUP VS REF: 126.0429846327071
+============================================================================================================================================================================================================================================================
+PI CONTRACTION APPROACH 3: jcr_pi_contraction_cuda_atomicmax...
+GPU WARMED UP.
+---
+REPETITION: 1/10:
+JCR PI CONTRACTION CUDA ATOMICMAX... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07, lazy_stop_check: 5, tpb: 64]
+[bpg: 121 (implied by number of states)]
+JCR PI CONTRACTION CUDA ATOMICMAX DONE. [d_inf: 6.1035156e-05, main iterations: 4, evaluation iterations total: 435, time: 0.014624834060668945 s]
+---
+REPETITION: 2/10:
+JCR PI CONTRACTION CUDA ATOMICMAX... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07, lazy_stop_check: 5, tpb: 64]
+[bpg: 121 (implied by number of states)]
+JCR PI CONTRACTION CUDA ATOMICMAX DONE. [d_inf: 6.1035156e-05, main iterations: 4, evaluation iterations total: 435, time: 0.014418601989746094 s]
+---
+REPETITION: 3/10:
+JCR PI CONTRACTION CUDA ATOMICMAX... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07, lazy_stop_check: 5, tpb: 64]
+[bpg: 121 (implied by number of states)]
+JCR PI CONTRACTION CUDA ATOMICMAX DONE. [d_inf: 6.1035156e-05, main iterations: 4, evaluation iterations total: 435, time: 0.014338254928588867 s]
+---
+REPETITION: 4/10:
+JCR PI CONTRACTION CUDA ATOMICMAX... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07, lazy_stop_check: 5, tpb: 64]
+[bpg: 121 (implied by number of states)]
+JCR PI CONTRACTION CUDA ATOMICMAX DONE. [d_inf: 6.1035156e-05, main iterations: 4, evaluation iterations total: 435, time: 0.01416778564453125 s]
+---
+REPETITION: 5/10:
+JCR PI CONTRACTION CUDA ATOMICMAX... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07, lazy_stop_check: 5, tpb: 64]
+[bpg: 121 (implied by number of states)]
+JCR PI CONTRACTION CUDA ATOMICMAX DONE. [d_inf: 6.1035156e-05, main iterations: 4, evaluation iterations total: 435, time: 0.014111757278442383 s]
+---
+REPETITION: 6/10:
+JCR PI CONTRACTION CUDA ATOMICMAX... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07, lazy_stop_check: 5, tpb: 64]
+[bpg: 121 (implied by number of states)]
+JCR PI CONTRACTION CUDA ATOMICMAX DONE. [d_inf: 6.1035156e-05, main iterations: 4, evaluation iterations total: 435, time: 0.014138460159301758 s]
+---
+REPETITION: 7/10:
+JCR PI CONTRACTION CUDA ATOMICMAX... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07, lazy_stop_check: 5, tpb: 64]
+[bpg: 121 (implied by number of states)]
+JCR PI CONTRACTION CUDA ATOMICMAX DONE. [d_inf: 6.1035156e-05, main iterations: 4, evaluation iterations total: 435, time: 0.014763593673706055 s]
+---
+REPETITION: 8/10:
+JCR PI CONTRACTION CUDA ATOMICMAX... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07, lazy_stop_check: 5, tpb: 64]
+[bpg: 121 (implied by number of states)]
+JCR PI CONTRACTION CUDA ATOMICMAX DONE. [d_inf: 6.1035156e-05, main iterations: 4, evaluation iterations total: 435, time: 0.013952970504760742 s]
+---
+REPETITION: 9/10:
+JCR PI CONTRACTION CUDA ATOMICMAX... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07, lazy_stop_check: 5, tpb: 64]
+[bpg: 121 (implied by number of states)]
+JCR PI CONTRACTION CUDA ATOMICMAX DONE. [d_inf: 6.1035156e-05, main iterations: 4, evaluation iterations total: 435, time: 0.01402902603149414 s]
+---
+REPETITION: 10/10:
+JCR PI CONTRACTION CUDA ATOMICMAX... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07, lazy_stop_check: 5, tpb: 64]
+[bpg: 121 (implied by number of states)]
+JCR PI CONTRACTION CUDA ATOMICMAX DONE. [d_inf: 6.1035156e-05, main iterations: 4, evaluation iterations total: 435, time: 0.01392221450805664 s]
+***
+SUMMARY:
+V OUT:
+[420.29102 430.26245 440.1137  449.70554 458.90802 467.64188 475.87488
+ 483.73468 491.44366 498.83374 505.95593 430.16132 440.13266 449.98352
+ 459.57422 468.77466 477.5055  485.73465 493.44366 500.83377 507.95593
+ 514.52014 439.6192  449.59015 459.439   469.02454 478.21564 486.9328
+ 495.14478 502.83377 509.95593 516.52014 522.92145 448.4022  458.37213
+ 468.216   477.78864 486.95618 495.63937 503.80902 511.44992 518.52014
+ 524.92145 530.4964  456.41104 466.3792  476.2139  485.7627  494.88702
+ 503.50806 511.60095 519.156   526.13605 532.4468  537.935   464.3792
+ 474.2139  483.7627  492.9884  502.04727 510.57422 518.5515  525.97876
+ 532.82715 539.00903 544.3779  472.21393 481.7627  490.98843 500.0473
+ 508.57422 516.9182  524.74304 532.0022  538.67914 544.6963  549.916
+ 479.76266 488.9884  498.0473  506.57425 514.9182  522.74304 530.21655
+ 537.27686 543.7512  549.5752  554.6218  486.9884  496.0473  504.57425
+ 512.9182  520.74304 528.2165  535.27686 541.78516 548.04236 553.65894
+ 558.52045 494.04727 502.57425 510.9182  518.74304 526.21643 533.27686
+ 539.7851  546.04236 551.65894 556.9252  561.60675 500.57422 508.9182
+ 516.74304 524.21655 531.27686 537.7851  544.04236 549.65894 554.9252
+ 559.60675 563.88916]
+POLICY OUT:
+[ 0  0  0  0  0  0  0 -1 -1 -2 -2  0  0  0  0  0  0  0  0 -1 -1 -2  0  0
+  0  0  0  0  0  0  0 -1 -1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
+  0  0  0  0  0  0  0  1  1  1  0  0  0  0  0  0  0  0  2  2  1  1  1  0
+  0  0  0  0  0  3  2  2  2  1  1  0  0  0  0  0  3  3  3  2  2  1  1  0
+  0  0  0  4  4  3  3  2  2  1  1  1  0  0  5  4  4  3  3  2  2  2  1  1
+  0]
+D_INF OF V VS REF: 0.00024414062
+D_INF OF POLICY VS REF: 0
+D_INF (AT STOP) MEAN: 6.103515625e-05
+MAIN ITERATIONS MEAN: 4.0
+EVAL ITERATIONS TOTAL MEAN: 435.0
+TIME MEAN: 0.014246749877929687 s, STD: 0.0002689237245093775 s, STD_%: 1.9%
+SPEEDUP VS REF: 101.16099519372374
+============================================================================================================================================================================================================================================================
+PI CONTRACTION APPROACH 4: jcr_pi_contraction_cuda_atomicmaxplain...
+---
+REPETITION: 1/10:
+JCR PI CONTRACTION CUDA ATOMICMAXPLAIN... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07, lazy_stop_check: 5, tpb: 64]
+[bpg: 121 (implied by number of states)]
+JCR PI CONTRACTION CUDA ATOMICMAXPLAIN DONE. [d_inf: 6.1035156e-05, main iterations: 4, evaluation iterations total: 435, time: 0.014897346496582031 s]
+---
+REPETITION: 2/10:
+JCR PI CONTRACTION CUDA ATOMICMAXPLAIN... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07, lazy_stop_check: 5, tpb: 64]
+[bpg: 121 (implied by number of states)]
+JCR PI CONTRACTION CUDA ATOMICMAXPLAIN DONE. [d_inf: 6.1035156e-05, main iterations: 4, evaluation iterations total: 435, time: 0.014682531356811523 s]
+---
+REPETITION: 3/10:
+JCR PI CONTRACTION CUDA ATOMICMAXPLAIN... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07, lazy_stop_check: 5, tpb: 64]
+[bpg: 121 (implied by number of states)]
+JCR PI CONTRACTION CUDA ATOMICMAXPLAIN DONE. [d_inf: 6.1035156e-05, main iterations: 4, evaluation iterations total: 435, time: 0.014753580093383789 s]
+---
+REPETITION: 4/10:
+JCR PI CONTRACTION CUDA ATOMICMAXPLAIN... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07, lazy_stop_check: 5, tpb: 64]
+[bpg: 121 (implied by number of states)]
+JCR PI CONTRACTION CUDA ATOMICMAXPLAIN DONE. [d_inf: 6.1035156e-05, main iterations: 4, evaluation iterations total: 435, time: 0.015986919403076172 s]
+---
+REPETITION: 5/10:
+JCR PI CONTRACTION CUDA ATOMICMAXPLAIN... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07, lazy_stop_check: 5, tpb: 64]
+[bpg: 121 (implied by number of states)]
+JCR PI CONTRACTION CUDA ATOMICMAXPLAIN DONE. [d_inf: 6.1035156e-05, main iterations: 4, evaluation iterations total: 435, time: 0.014902353286743164 s]
+---
+REPETITION: 6/10:
+JCR PI CONTRACTION CUDA ATOMICMAXPLAIN... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07, lazy_stop_check: 5, tpb: 64]
+[bpg: 121 (implied by number of states)]
+JCR PI CONTRACTION CUDA ATOMICMAXPLAIN DONE. [d_inf: 6.1035156e-05, main iterations: 4, evaluation iterations total: 435, time: 0.014956474304199219 s]
+---
+REPETITION: 7/10:
+JCR PI CONTRACTION CUDA ATOMICMAXPLAIN... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07, lazy_stop_check: 5, tpb: 64]
+[bpg: 121 (implied by number of states)]
+JCR PI CONTRACTION CUDA ATOMICMAXPLAIN DONE. [d_inf: 6.1035156e-05, main iterations: 4, evaluation iterations total: 435, time: 0.014841079711914062 s]
+---
+REPETITION: 8/10:
+JCR PI CONTRACTION CUDA ATOMICMAXPLAIN... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07, lazy_stop_check: 5, tpb: 64]
+[bpg: 121 (implied by number of states)]
+JCR PI CONTRACTION CUDA ATOMICMAXPLAIN DONE. [d_inf: 6.1035156e-05, main iterations: 4, evaluation iterations total: 435, time: 0.01487278938293457 s]
+---
+REPETITION: 9/10:
+JCR PI CONTRACTION CUDA ATOMICMAXPLAIN... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07, lazy_stop_check: 5, tpb: 64]
+[bpg: 121 (implied by number of states)]
+JCR PI CONTRACTION CUDA ATOMICMAXPLAIN DONE. [d_inf: 6.1035156e-05, main iterations: 4, evaluation iterations total: 435, time: 0.014868974685668945 s]
+---
+REPETITION: 10/10:
+JCR PI CONTRACTION CUDA ATOMICMAXPLAIN... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07, lazy_stop_check: 5, tpb: 64]
+[bpg: 121 (implied by number of states)]
+JCR PI CONTRACTION CUDA ATOMICMAXPLAIN DONE. [d_inf: 6.1035156e-05, main iterations: 4, evaluation iterations total: 435, time: 0.01491093635559082 s]
+***
+SUMMARY:
+V OUT:
+[420.29102 430.26245 440.1137  449.70554 458.90802 467.6419  475.87488
+ 483.73468 491.44366 498.83374 505.95593 430.16132 440.13266 449.98352
+ 459.57422 468.77466 477.5055  485.73468 493.44366 500.83377 507.95593
+ 514.52014 439.6192  449.59015 459.439   469.02457 478.21564 486.93286
+ 495.14478 502.83377 509.95593 516.52014 522.92145 448.4022  458.37213
+ 468.21603 477.78864 486.95618 495.63937 503.80905 511.44992 518.52014
+ 524.9215  530.4964  456.41107 466.3792  476.21393 485.7627  494.88702
+ 503.50806 511.60095 519.156   526.13605 532.4468  537.935   464.3792
+ 474.2139  483.7627  492.9884  502.04727 510.57425 518.5515  525.97876
+ 532.82715 539.00903 544.3779  472.21393 481.7627  490.98843 500.0473
+ 508.57425 516.9182  524.74304 532.0022  538.67914 544.6963  549.916
+ 479.7627  488.9884  498.0473  506.57425 514.9182  522.74304 530.21655
+ 537.27686 543.7512  549.5752  554.6218  486.9884  496.0473  504.57425
+ 512.9182  520.74304 528.2165  535.27686 541.78516 548.04236 553.65894
+ 558.52045 494.04727 502.57425 510.9182  518.74304 526.2165  533.27686
+ 539.7851  546.04236 551.65894 556.9252  561.60675 500.57422 508.9182
+ 516.74304 524.21655 531.27686 537.7851  544.04236 549.65894 554.9252
+ 559.60675 563.88916]
+POLICY OUT:
+[ 0  0  0  0  0  0  0 -1 -1 -2 -2  0  0  0  0  0  0  0  0 -1 -1 -2  0  0
+  0  0  0  0  0  0  0 -1 -1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
+  0  0  0  0  0  0  0  1  1  1  0  0  0  0  0  0  0  0  2  2  1  1  1  0
+  0  0  0  0  0  3  2  2  2  1  1  0  0  0  0  0  3  3  3  2  2  1  1  0
+  0  0  0  4  4  3  3  2  2  1  1  1  0  0  5  4  4  3  3  2  2  2  1  1
+  0]
+D_INF OF V VS REF: 0.00024414062
+D_INF OF POLICY VS REF: 0
+D_INF (AT STOP) MEAN: 6.103515625e-05
+MAIN ITERATIONS MEAN: 4.0
+EVAL ITERATIONS TOTAL MEAN: 435.0
+TIME MEAN: 0.01496729850769043 s, STD: 0.00034832892721383936 s, STD_%: 2.3%
+SPEEDUP VS REF: 96.29095024642626
+============================================================================================================================================================================================================================================================
+PI CONTRACTION APPROACH 5: jcr_pi_contraction_cuda_reducemax...
+---
+REPETITION: 1/10:
+JCR PI CONTRACTION CUDA REDUCEMAX... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07, lazy_stop_check: 5, tpb: 64]
+[bpg: 121 (implied by number of states)]
+JCR PI CONTRACTION CUDA REDUCEMAX DONE. [d_inf: 6.1035156e-05, main iterations: 4, evaluation iterations total: 435, time: 0.011289596557617188 s]
+---
+REPETITION: 2/10:
+JCR PI CONTRACTION CUDA REDUCEMAX... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07, lazy_stop_check: 5, tpb: 64]
+[bpg: 121 (implied by number of states)]
+JCR PI CONTRACTION CUDA REDUCEMAX DONE. [d_inf: 6.1035156e-05, main iterations: 4, evaluation iterations total: 435, time: 0.011339664459228516 s]
+---
+REPETITION: 3/10:
+JCR PI CONTRACTION CUDA REDUCEMAX... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07, lazy_stop_check: 5, tpb: 64]
+[bpg: 121 (implied by number of states)]
+JCR PI CONTRACTION CUDA REDUCEMAX DONE. [d_inf: 6.1035156e-05, main iterations: 4, evaluation iterations total: 435, time: 0.011228084564208984 s]
+---
+REPETITION: 4/10:
+JCR PI CONTRACTION CUDA REDUCEMAX... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07, lazy_stop_check: 5, tpb: 64]
+[bpg: 121 (implied by number of states)]
+JCR PI CONTRACTION CUDA REDUCEMAX DONE. [d_inf: 6.1035156e-05, main iterations: 4, evaluation iterations total: 435, time: 0.011237621307373047 s]
+---
+REPETITION: 5/10:
+JCR PI CONTRACTION CUDA REDUCEMAX... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07, lazy_stop_check: 5, tpb: 64]
+[bpg: 121 (implied by number of states)]
+JCR PI CONTRACTION CUDA REDUCEMAX DONE. [d_inf: 6.1035156e-05, main iterations: 4, evaluation iterations total: 435, time: 0.011218070983886719 s]
+---
+REPETITION: 6/10:
+JCR PI CONTRACTION CUDA REDUCEMAX... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07, lazy_stop_check: 5, tpb: 64]
+[bpg: 121 (implied by number of states)]
+JCR PI CONTRACTION CUDA REDUCEMAX DONE. [d_inf: 6.1035156e-05, main iterations: 4, evaluation iterations total: 435, time: 0.01120448112487793 s]
+---
+REPETITION: 7/10:
+JCR PI CONTRACTION CUDA REDUCEMAX... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07, lazy_stop_check: 5, tpb: 64]
+[bpg: 121 (implied by number of states)]
+JCR PI CONTRACTION CUDA REDUCEMAX DONE. [d_inf: 6.1035156e-05, main iterations: 4, evaluation iterations total: 435, time: 0.011202812194824219 s]
+---
+REPETITION: 8/10:
+JCR PI CONTRACTION CUDA REDUCEMAX... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07, lazy_stop_check: 5, tpb: 64]
+[bpg: 121 (implied by number of states)]
+JCR PI CONTRACTION CUDA REDUCEMAX DONE. [d_inf: 6.1035156e-05, main iterations: 4, evaluation iterations total: 435, time: 0.01134943962097168 s]
+---
+REPETITION: 9/10:
+JCR PI CONTRACTION CUDA REDUCEMAX... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07, lazy_stop_check: 5, tpb: 64]
+[bpg: 121 (implied by number of states)]
+JCR PI CONTRACTION CUDA REDUCEMAX DONE. [d_inf: 6.1035156e-05, main iterations: 4, evaluation iterations total: 435, time: 0.011284112930297852 s]
+---
+REPETITION: 10/10:
+JCR PI CONTRACTION CUDA REDUCEMAX... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07, lazy_stop_check: 5, tpb: 64]
+[bpg: 121 (implied by number of states)]
+JCR PI CONTRACTION CUDA REDUCEMAX DONE. [d_inf: 6.1035156e-05, main iterations: 4, evaluation iterations total: 435, time: 0.011146068572998047 s]
+***
+SUMMARY:
+V OUT:
+[420.29102 430.26245 440.1137  449.70554 458.90802 467.64188 475.87488
+ 483.73468 491.44366 498.83374 505.95593 430.16132 440.13266 449.98352
+ 459.57422 468.77466 477.5055  485.73465 493.44366 500.83377 507.95593
+ 514.52014 439.6192  449.59015 459.439   469.02454 478.21564 486.9328
+ 495.14478 502.83377 509.95593 516.52014 522.92145 448.4022  458.37213
+ 468.216   477.78864 486.95618 495.63937 503.80902 511.44992 518.52014
+ 524.92145 530.4964  456.41104 466.3792  476.2139  485.7627  494.88702
+ 503.50806 511.60095 519.156   526.13605 532.4468  537.935   464.3792
+ 474.2139  483.7627  492.9884  502.04727 510.57422 518.5515  525.97876
+ 532.82715 539.00903 544.3779  472.21393 481.7627  490.98843 500.0473
+ 508.57422 516.9182  524.74304 532.0022  538.67914 544.6963  549.916
+ 479.76266 488.9884  498.0473  506.57425 514.9182  522.74304 530.21655
+ 537.27686 543.7512  549.5752  554.6218  486.9884  496.0473  504.57425
+ 512.9182  520.74304 528.2165  535.27686 541.78516 548.04236 553.65894
+ 558.52045 494.04727 502.57425 510.9182  518.74304 526.21643 533.27686
+ 539.7851  546.04236 551.65894 556.9252  561.60675 500.57422 508.9182
+ 516.74304 524.21655 531.27686 537.7851  544.04236 549.65894 554.9252
+ 559.60675 563.88916]
+POLICY OUT:
+[ 0  0  0  0  0  0  0 -1 -1 -2 -2  0  0  0  0  0  0  0  0 -1 -1 -2  0  0
+  0  0  0  0  0  0  0 -1 -1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
+  0  0  0  0  0  0  0  1  1  1  0  0  0  0  0  0  0  0  2  2  1  1  1  0
+  0  0  0  0  0  3  2  2  2  1  1  0  0  0  0  0  3  3  3  2  2  1  1  0
+  0  0  0  4  4  3  3  2  2  1  1  1  0  0  5  4  4  3  3  2  2  2  1  1
+  0]
+D_INF OF V VS REF: 0.00024414062
+D_INF OF POLICY VS REF: 0
+D_INF (AT STOP) MEAN: 6.103515625e-05
+MAIN ITERATIONS MEAN: 4.0
+EVAL ITERATIONS TOTAL MEAN: 435.0
+TIME MEAN: 0.011249995231628418 s, STD: 6.116609479472303e-05 s, STD_%: 0.5%
+SPEEDUP VS REF: 128.10808949283577
+============================================================================================================================================================================================================================================================
+PI CONTRACTION APPROACH 6: jcr_pi_contraction_cuda_gridsync...
+---
+REPETITION: 1/10:
+JCR PI CONTRACTION CUDA GRIDSYNC... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07, tpb: 64, assumed max_bpg_gridsync: None]
+[discovered max_bpg_gridsync: 2040; time: 9.369850158691406e-05 s]
+[kernel eval -> bpg: 121 (max_bpg_gridsync or number of states if smaller), tpb: 64, spb: 1]
+[kernel improve -> bpg: 121 (implied by number of states), tpb: 64]
+JCR PI CONTRACTION CUDA GRIDSYNC DONE. [d_inf: 6.1035156e-05, main iterations: 4, evaluation iterations total: 411, time: 0.007607698440551758 s]
+---
+REPETITION: 2/10:
+JCR PI CONTRACTION CUDA GRIDSYNC... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07, tpb: 64, assumed max_bpg_gridsync: None]
+[discovered max_bpg_gridsync: 2040; time: 4.267692565917969e-05 s]
+[kernel eval -> bpg: 121 (max_bpg_gridsync or number of states if smaller), tpb: 64, spb: 1]
+[kernel improve -> bpg: 121 (implied by number of states), tpb: 64]
+JCR PI CONTRACTION CUDA GRIDSYNC DONE. [d_inf: 6.1035156e-05, main iterations: 4, evaluation iterations total: 411, time: 0.007432222366333008 s]
+---
+REPETITION: 3/10:
+JCR PI CONTRACTION CUDA GRIDSYNC... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07, tpb: 64, assumed max_bpg_gridsync: None]
+[discovered max_bpg_gridsync: 2040; time: 3.9577484130859375e-05 s]
+[kernel eval -> bpg: 121 (max_bpg_gridsync or number of states if smaller), tpb: 64, spb: 1]
+[kernel improve -> bpg: 121 (implied by number of states), tpb: 64]
+JCR PI CONTRACTION CUDA GRIDSYNC DONE. [d_inf: 6.1035156e-05, main iterations: 4, evaluation iterations total: 411, time: 0.007414579391479492 s]
+---
+REPETITION: 4/10:
+JCR PI CONTRACTION CUDA GRIDSYNC... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07, tpb: 64, assumed max_bpg_gridsync: None]
+[discovered max_bpg_gridsync: 2040; time: 4.00543212890625e-05 s]
+[kernel eval -> bpg: 121 (max_bpg_gridsync or number of states if smaller), tpb: 64, spb: 1]
+[kernel improve -> bpg: 121 (implied by number of states), tpb: 64]
+JCR PI CONTRACTION CUDA GRIDSYNC DONE. [d_inf: 6.1035156e-05, main iterations: 4, evaluation iterations total: 411, time: 0.007502555847167969 s]
+---
+REPETITION: 5/10:
+JCR PI CONTRACTION CUDA GRIDSYNC... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07, tpb: 64, assumed max_bpg_gridsync: None]
+[discovered max_bpg_gridsync: 2040; time: 3.814697265625e-05 s]
+[kernel eval -> bpg: 121 (max_bpg_gridsync or number of states if smaller), tpb: 64, spb: 1]
+[kernel improve -> bpg: 121 (implied by number of states), tpb: 64]
+JCR PI CONTRACTION CUDA GRIDSYNC DONE. [d_inf: 6.1035156e-05, main iterations: 4, evaluation iterations total: 411, time: 0.007392168045043945 s]
+---
+REPETITION: 6/10:
+JCR PI CONTRACTION CUDA GRIDSYNC... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07, tpb: 64, assumed max_bpg_gridsync: None]
+[discovered max_bpg_gridsync: 2040; time: 3.886222839355469e-05 s]
+[kernel eval -> bpg: 121 (max_bpg_gridsync or number of states if smaller), tpb: 64, spb: 1]
+[kernel improve -> bpg: 121 (implied by number of states), tpb: 64]
+JCR PI CONTRACTION CUDA GRIDSYNC DONE. [d_inf: 6.1035156e-05, main iterations: 4, evaluation iterations total: 411, time: 0.0073909759521484375 s]
+---
+REPETITION: 7/10:
+JCR PI CONTRACTION CUDA GRIDSYNC... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07, tpb: 64, assumed max_bpg_gridsync: None]
+[discovered max_bpg_gridsync: 2040; time: 3.790855407714844e-05 s]
+[kernel eval -> bpg: 121 (max_bpg_gridsync or number of states if smaller), tpb: 64, spb: 1]
+[kernel improve -> bpg: 121 (implied by number of states), tpb: 64]
+JCR PI CONTRACTION CUDA GRIDSYNC DONE. [d_inf: 6.1035156e-05, main iterations: 4, evaluation iterations total: 411, time: 0.007389545440673828 s]
+---
+REPETITION: 8/10:
+JCR PI CONTRACTION CUDA GRIDSYNC... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07, tpb: 64, assumed max_bpg_gridsync: None]
+[discovered max_bpg_gridsync: 2040; time: 3.7670135498046875e-05 s]
+[kernel eval -> bpg: 121 (max_bpg_gridsync or number of states if smaller), tpb: 64, spb: 1]
+[kernel improve -> bpg: 121 (implied by number of states), tpb: 64]
+JCR PI CONTRACTION CUDA GRIDSYNC DONE. [d_inf: 6.1035156e-05, main iterations: 4, evaluation iterations total: 411, time: 0.007402181625366211 s]
+---
+REPETITION: 9/10:
+JCR PI CONTRACTION CUDA GRIDSYNC... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07, tpb: 64, assumed max_bpg_gridsync: None]
+[discovered max_bpg_gridsync: 2040; time: 3.695487976074219e-05 s]
+[kernel eval -> bpg: 121 (max_bpg_gridsync or number of states if smaller), tpb: 64, spb: 1]
+[kernel improve -> bpg: 121 (implied by number of states), tpb: 64]
+JCR PI CONTRACTION CUDA GRIDSYNC DONE. [d_inf: 6.1035156e-05, main iterations: 4, evaluation iterations total: 411, time: 0.007389545440673828 s]
+---
+REPETITION: 10/10:
+JCR PI CONTRACTION CUDA GRIDSYNC... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07, tpb: 64, assumed max_bpg_gridsync: None]
+[discovered max_bpg_gridsync: 2040; time: 3.62396240234375e-05 s]
+[kernel eval -> bpg: 121 (max_bpg_gridsync or number of states if smaller), tpb: 64, spb: 1]
+[kernel improve -> bpg: 121 (implied by number of states), tpb: 64]
+JCR PI CONTRACTION CUDA GRIDSYNC DONE. [d_inf: 6.1035156e-05, main iterations: 4, evaluation iterations total: 411, time: 0.007366657257080078 s]
+***
+SUMMARY:
+V OUT:
+[420.2909  430.26233 440.1136  449.7054  458.9079  467.64175 475.87476
+ 483.73453 491.44354 498.83362 505.95584 430.1612  440.13254 449.9834
+ 459.57407 468.77454 477.50537 485.73453 493.44354 500.83362 507.9558
+ 514.52    439.61908 449.59003 459.43887 469.02444 478.21548 486.93268
+ 495.14465 502.83362 509.9558  516.52    522.9213  448.40207 458.372
+ 468.21588 477.7885  486.956   495.63925 503.8089  511.44977 518.52
+ 524.9214  530.4963  456.41092 466.3791  476.21378 485.76257 494.88684
+ 503.5079  511.60083 519.1559  526.1359  532.44666 537.9348  464.3791
+ 474.21378 483.76254 492.98828 502.04718 510.5741  518.5514  525.97864
+ 532.827   539.0089  544.37775 472.21378 481.76254 490.9883  500.04715
+ 508.5741  516.9181  524.7429  532.0021  538.679   544.69617 549.91583
+ 479.76257 488.98828 498.04715 506.5741  514.9181  522.7429  530.21643
+ 537.27673 543.7511  549.5751  554.62164 486.98828 496.04718 504.5741
+ 512.9181  520.7429  528.2164  535.27673 541.78503 548.04224 553.6588
+ 558.52026 494.04715 502.5741  510.9181  518.7429  526.2164  533.27673
+ 539.785   546.04224 551.6588  556.92505 561.6066  500.5741  508.9181
+ 516.74286 524.2164  531.27673 537.785   544.04224 549.6588  554.92505
+ 559.6066  563.88904]
+POLICY OUT:
+[ 0  0  0  0  0  0  0 -1 -1 -2 -2  0  0  0  0  0  0  0  0 -1 -1 -2  0  0
+  0  0  0  0  0  0  0 -1 -1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
+  0  0  0  0  0  0  0  1  1  1  0  0  0  0  0  0  0  0  2  2  1  1  1  0
+  0  0  0  0  0  3  2  2  2  1  1  0  0  0  0  0  3  3  3  2  2  1  1  0
+  0  0  0  4  4  3  3  2  2  1  1  1  0  0  5  4  4  3  3  2  2  2  1  1
+  0]
+D_INF OF V VS REF: 0.00012207031
+D_INF OF POLICY VS REF: 0
+D_INF (AT STOP) MEAN: 6.103515625e-05
+MAIN ITERATIONS MEAN: 4.0
+EVAL ITERATIONS TOTAL MEAN: 411.0
+TIME MEAN: 0.007428812980651856 s, STD: 6.934203023972766e-05 s, STD_%: 0.9%
+SPEEDUP VS REF: 194.00345649850604
+============================================================================================================================================================================================================================================================
+============================================================================================================================================================================================================================================================
+FINAL SUMMARY:
+PI CONTRACTION APPROACH 1: jcr_pi_contraction_cpu_numpy (REFERENCE) -> MEAN MAIN ITERS: 4.0, MEAN EVAL ITERS TOTAL: 408.0, MEAN D_INF: 9.1552734375e-05, MEAN TIME: 1.4412153959274292 s, TIME STD: 0.0020264871423646496 s, STD_%: 0.1%, SPEED-UP: 1.00
+PI CONTRACTION APPROACH 2: jcr_pi_contraction_cpu_numba_parallel -> MEAN MAIN ITERS: 4.0, MEAN EVAL ITERS TOTAL: 408.0, MEAN D_INF: 9.1552734375e-05, MEAN TIME: 0.011434316635131836 s, TIME STD: 0.001121335866831034 s, STD_%: 9.8%, SPEED-UP: 126.04
+PI CONTRACTION APPROACH 3: jcr_pi_contraction_cuda_atomicmax -> MEAN MAIN ITERS: 4.0, MEAN EVAL ITERS TOTAL: 435.0, MEAN D_INF: 6.103515625e-05, MEAN TIME: 0.014246749877929687 s, TIME STD: 0.0002689237245093775 s, STD_%: 1.9%, SPEED-UP: 101.16
+PI CONTRACTION APPROACH 4: jcr_pi_contraction_cuda_atomicmaxplain -> MEAN MAIN ITERS: 4.0, MEAN EVAL ITERS TOTAL: 435.0, MEAN D_INF: 6.103515625e-05, MEAN TIME: 0.01496729850769043 s, TIME STD: 0.00034832892721383936 s, STD_%: 2.3%, SPEED-UP: 96.29
+PI CONTRACTION APPROACH 5: jcr_pi_contraction_cuda_reducemax -> MEAN MAIN ITERS: 4.0, MEAN EVAL ITERS TOTAL: 435.0, MEAN D_INF: 6.103515625e-05, MEAN TIME: 0.011249995231628418 s, TIME STD: 6.116609479472303e-05 s, STD_%: 0.5%, SPEED-UP: 128.11
+PI CONTRACTION APPROACH 6: jcr_pi_contraction_cuda_gridsync -> MEAN MAIN ITERS: 4.0, MEAN EVAL ITERS TOTAL: 411.0, MEAN D_INF: 6.103515625e-05, MEAN TIME: 0.007428812980651856 s, TIME STD: 6.934203023972766e-05 s, STD_%: 0.9%, SPEED-UP: 194.00
+JACK'S CAR RENTAL DONE. [hash string: 0144356746_31947_901_[1;10;10;10.0;-2.0;[3.0,4.0];[3.0,2.0];True;0.9;1.0e-04;1.0e-07;False;TTTTTT], time: 15.023067235946655 s]
