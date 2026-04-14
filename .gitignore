@@ -207,6 +207,7 @@ __marimo__/
 
 .project
 .pydevproject
+.settings
 src/__pycache__
 mdp_joint_distrs/*.pkl
 src/out.log

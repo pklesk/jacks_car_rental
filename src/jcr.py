@@ -6,7 +6,7 @@ from numpy import inf
 import math
 import itertools
 import time
-from numba import cuda
+from numba import cuda, jit, prange
 from numba import void, int8, int16, int32, float32, boolean
 from numba.core.errors import NumbaPerformanceWarning
 import warnings
@@ -103,7 +103,7 @@ def jcr_pi_contraction_cpu_numpy(policy_in, V_in, P,
         k_eval = 0
         while True:
             t1_eval = time.time()    
-            d = 0                     
+            d = 0.0                     
             for s_index in range(states.shape[0]):
                 a_index = policy[s_index]
                 reward_cars_moved = np.abs(actions[a_index]) * reward_car_moved
@@ -116,7 +116,7 @@ def jcr_pi_contraction_cpu_numpy(policy_in, V_in, P,
                     # term_mul_add = P[s_index, a_index, r_index] * term_add
                     # v_new += np.sum(term_mul_add, dtype=np.float32)
                 V_dst[s_index] = v_new
-            d = max(np.abs(V_src - V_dst))
+            d = np.max(np.abs(V_src - V_dst))
             k_eval += 1
             tmp = V_src # ping-pong
             V_src = V_dst
@@ -160,86 +160,96 @@ def jcr_pi_contraction_cpu_numpy(policy_in, V_in, P,
         print(f"JCR PI CONTRACTION CPU NUMPY DONE. [d_inf: {str(d)}, main iterations: {k_main}, evaluation iterations total: {k_eval_total}, time: {t2 - t1} s]")
     return policy_out, V_out, d, k_main, k_eval_total, t2 - t1, history_for_plots    
 
-def jcr_pi_contraction_cpu_numpy_blas_style(policy_in, V_in, P, 
-                                             gamma, eps, tolerance_v,                                              
-                                             states=STATES, actions=ACTIONS, rewards_rental=REWARDS_RENTAL, reward_car_moved=REWARD_CAR_MOVED,
-                                             verbose=True, verbose_iters=False, plots=False):
+def jcr_pi_contraction_cpu_numba_parallel(policy_in, V_in, P, 
+                                          gamma, eps, tolerance_v,                               
+                                          states=STATES, actions=ACTIONS, rewards_rental=REWARDS_RENTAL, reward_car_moved=REWARD_CAR_MOVED,
+                                          verbose=True, verbose_iters=False, plots=False):
     if verbose:
-        print(f"JCR PI CONTRACTION CPU NUMPY (BLAS STYLE)... [gamma: {gamma}, eps: {eps}]")
-    
+        print(f"JCR PI CONTRACTION CPU NUMBA PARALLEL... [gamma: {gamma}, eps: {eps}, tolerance_v: {tolerance_v}]")
     t1 = time.time()
-    n_states = states.shape[0]
-    n_actions = actions.shape[0]
-    s_indices = np.arange(n_states)
-    
-    policy = np.copy(policy_in)
-    V_curr = np.copy(V_in)
-    
-    k_main = 0
-    k_eval_total = 0
     history_for_plots = []
+    if verbose_iters and plots:
+        history_for_plots.append((V_in, policy_in))
+        plot_value_and_policy_jcr(V_in, policy_in)    
+    policy = np.copy(policy_in)
+    V_src = np.copy(V_in)
+    V_dst = np.copy(V_in)
+    k_main = 0
+    k_eval_total = np.zeros(1, dtype=np.int32)
+    d = np.zeros(1, dtype=np.float32)
+    policy_stable = np.empty(1, dtype=bool)
+    while True:        
+        if verbose_iters:
+            print(f"---")        
+            print(f"[main iteration {k_main + 1}:]")
+        k_eval_so_far = k_eval_total[0] 
+        t1_eval = time.time()
+        jcr_pi_cpu_numba_parallel_eval(P, V_src, policy, states, actions, rewards_rental, reward_car_moved, gamma, eps, V_dst, d, k_eval_total, verbose_iters)
+        t2_eval = time.time()
+        k_eval = k_eval_total[0] - k_eval_so_far  
+        if verbose_iters:                
+            print(f"[policy evaluation done [iterations: {k_eval}, time: {t2_eval - t1_eval} s]]")
+        t1_impr = time.time()
+        jcr_pi_cpu_numba_parallel_improve(P, V_src, policy, states, actions, rewards_rental, reward_car_moved, gamma, tolerance_v, policy_stable)
+        t2_impr = time.time()
+        k_main += 1
+        if verbose_iters:
+            print(f"[policy improvement [policy_stable: {policy_stable[0]}, d_inf: {str(d[0])}, d_inf <= tolerance_v: {d[0] <= tolerance_v}, time: {t2_impr - t1_impr} s]]")        
+            if plots:
+                V_now = np.copy(V_src)
+                policy_now = np.copy(policy)
+                history_for_plots.append((V_now, policy_now))
+                plot_value_and_policy_jcr(V_now, policy_now)
+        if policy_stable[0] or (k_eval == 1 and d <= tolerance_v):
+            break
+    V_out = V_src
+    policy_out = policy
+    t2 = time.time()
+    if verbose:
+        print(f"JCR PI CONTRACTION CPU NUMBA PARALLEL DONE. [d_inf: {str(d)}, main iterations: {k_main}, evaluation iterations total: {k_eval_total[0]}, time: {t2 - t1} s]")
+    return policy_out, V_out, d, k_main, k_eval_total, t2 - t1, history_for_plots
 
-    # PRE-CALCULATION: Obliczamy macierz nagród R(s, a) raz dla wszystkich stanów i akcji
-    # R_sa shape: (n_states, n_actions)
-    # R_sa[s, a] = r_moved(a) + sum_{r, s'} P(s, a, r, s') * reward_rental[r]
-    r_moved_all = np.abs(actions) * reward_car_moved # (n_actions,)
-    
-    # Sumujemy P po s', aby dostać P(s, a, r)
-    P_sar = P.sum(axis=3) # (n_states, n_actions, n_rewards)
-    expected_rental_all = P_sar.dot(rewards_rental) # (n_states, n_actions)
-    R_sa = r_moved_all + expected_rental_all
-
-    while True:
-        # 1. PRZYGOTOWANIE MODELU DLA AKTUALNEJ POLITYKI
-        R_pi = R_sa[s_indices, policy]
-        P_pi = P[s_indices, policy].sum(axis=1) # (n_states, n_states)
-
-        # 2. PĘTLA EWALUACJI POLITYKI
+@jit(void(float32[:,:,:,:], float32[:], int16[:], int16[:, :], int16[:], float32[:], float32, float32, float32, float32[:], float32[:], int32[:], boolean), nopython=True, parallel=True, cache=True)
+def jcr_pi_cpu_numba_parallel_eval(P, V_src, policy, states, actions, rewards_rental, reward_car_moved, gamma, eps, V_dst, d, k_eval_total, verbose_iters):
         k_eval = 0
         while True:
-            V_next = R_pi + gamma * P_pi.dot(V_curr)
-            d = np.max(np.abs(V_next - V_curr))
-            V_curr = V_next
+            d[0] = 0                     
+            for s_index in prange(states.shape[0]):
+                a_index = policy[s_index]
+                reward_cars_moved = np.abs(actions[a_index]) * reward_car_moved
+                v_new = 0.0
+                for r_index in range(rewards_rental.shape[0]):
+                    r = reward_cars_moved + rewards_rental[r_index]
+                    v_new += P[s_index, a_index, r_index].dot(r + gamma * V_src)             
+                V_dst[s_index] = v_new
+            d[0] = np.max(np.abs(V_src - V_dst))
             k_eval += 1
-            if d <= eps:
+            tmp = V_src # ping-pong
+            V_src = V_dst
+            V_dst = tmp                 
+            if verbose_iters:
+                print("[policy evaluation iteration", k_eval, "[d_inf:", d[0], ", time: n/a]")
+            if d[0] <= eps:
+                k_eval_total[0] += k_eval
                 break
-        
-        k_eval_total += k_eval
-        
-        # 3. POPRAWA POLITYKI (Policy Improvement) - Styl BLAS
-        # Szukamy argmax_a [ R(s, a) + gamma * sum_{s'} P(s, a, s') * V(s') ]
-        # P_sa_s_prime: (n_states, n_actions, n_states)
-        P_sa_s_prime = P.sum(axis=2)
-        
-        # Q_sa: (n_states, n_actions)
-        # Obliczamy iloczyn macierzowy dla każdego stanu i akcji
-        # Wykorzystujemy einsum dla maksymalnej wydajności w NumPy
-        Q_sa = R_sa + gamma * np.einsum('san,n->sa', P_sa_s_prime, V_curr)
-        
-        new_policy = np.argmax(Q_sa, axis=1).astype(np.int16)
-        
-        policy_stable = np.array_equal(policy, new_policy)
-        
-        if verbose_iters:
-            print(f"[main iteration {k_main + 1}] eval_iters: {k_eval}, d_inf: {d:.6f}, stable: {policy_stable}")
 
-        if plots:
-            history_for_plots.append((np.copy(V_curr), np.copy(new_policy)))
+@jit(void(float32[:,:,:,:], float32[:], int16[:], int16[:, :], int16[:], float32[:], float32, float32, float32, boolean[:]), nopython=True, parallel=True, cache=True)
+def jcr_pi_cpu_numba_parallel_improve(P, V_src, policy, states, actions, rewards_rental, reward_car_moved, gamma, tolerance_v, policy_stable):        
+    policy_stable[0] = True
+    for s_index in prange(states.shape[0]):
+        a_so_far = policy[s_index]
+        qs = np.zeros(actions.shape[0])
+        for a_index in range(actions.shape[0]):
+            reward_cars_moved = np.abs(actions[a_index]) * reward_car_moved
+            q = 0.0
+            for r_index in range(rewards_rental.shape[0]):
+                r = reward_cars_moved + rewards_rental[r_index]
+                q += (P[s_index, a_index, r_index].dot(r + gamma * V_src))
+            qs[a_index] = q
+        policy[s_index] = np.argmax(qs)
+        if policy[s_index] != a_so_far:
+            policy_stable[0] = False 
 
-        policy = new_policy
-        k_main += 1
-
-        # Warunek stopu PI
-        if policy_stable or (k_eval == 1 and d <= tolerance_v):
-            break
-
-    t2 = time.time()
-    time_total = t2 - t1
-    
-    if verbose:
-        print(f"JCR PI CONTRACTION CPU NUMPY (BLAS STYLE) DONE. [time: {time_total:.4f} s, main_iters: {k_main}]")
-    
-    return policy, V_curr, d, k_main, k_eval_total, time_total, history_for_plots                              
     
 def jcr_pi_contraction_cuda_atomicmax(policy_in, V_in, dev_P,                                             
                                       gamma, eps, tolerance_v,
