@@ -18,7 +18,7 @@ from scipy.ndimage import label
 
 # global settings
 MAX_CARS_AT_LOC = 30
-MAX_CARS_MOVED = 5
+MAX_CARS_MOVED = 10
 REWARD_CAR_RENTED = np.float32(10.0)
 REWARD_CAR_MOVED = np.float32(-2.0)
 REQUEST_POISSON_LAMBDAS_AT_LOC = [3.0, 4.0]
