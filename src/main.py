@@ -21,7 +21,7 @@ g_props = gpu_props()
                                            
 # global settings                
 FOLDER_EXPERIMENTS = "../experiments/"
-DEFAULT_REPETITIONS = 10
+DEFAULT_REPETITIONS = 1
 
 # experiment settings
 MAKE_JCR_MDP_JOINT_DISTR = False # False implies the distribution shall be read from a .pkl file prepared earlier
@@ -34,9 +34,9 @@ PLOTS = False
 APPROACHES_PI_CONTRACTION = { # approaches for contraction iteration (policy iteration)
     jcr.jcr_pi_contraction_cpu_numpy.__name__: (False, jcr.jcr_pi_contraction_cpu_numpy, DEFAULT_REPETITIONS, {}),
     jcr.jcr_pi_contraction_cpu_numba_parallel.__name__: (False, jcr.jcr_pi_contraction_cpu_numba_parallel, DEFAULT_REPETITIONS, {}), 
-    jcr.jcr_pi_contraction_cuda_atomicmax.__name__: (True, jcr.jcr_pi_contraction_cuda_atomicmax, DEFAULT_REPETITIONS, {"lazy_stop_check": jcr.DEFAULT_LAZY_STOP_CHECK, "tpb": jcr.DEFAULT_TPB}), 
-    jcr.jcr_pi_contraction_cuda_atomicmaxplain.__name__: (True, jcr.jcr_pi_contraction_cuda_atomicmaxplain, DEFAULT_REPETITIONS, {"lazy_stop_check": jcr.DEFAULT_LAZY_STOP_CHECK, "tpb": jcr.DEFAULT_TPB}),    
-    jcr.jcr_pi_contraction_cuda_reducemax.__name__: (True, jcr.jcr_pi_contraction_cuda_reducemax, DEFAULT_REPETITIONS, {"lazy_stop_check": jcr.DEFAULT_LAZY_STOP_CHECK, "tpb": jcr.DEFAULT_TPB}),
+    jcr.jcr_pi_contraction_cuda_atomicmax.__name__: (False, jcr.jcr_pi_contraction_cuda_atomicmax, DEFAULT_REPETITIONS, {"lazy_stop_check": jcr.DEFAULT_LAZY_STOP_CHECK, "tpb": jcr.DEFAULT_TPB}), 
+    jcr.jcr_pi_contraction_cuda_atomicmaxplain.__name__: (False, jcr.jcr_pi_contraction_cuda_atomicmaxplain, DEFAULT_REPETITIONS, {"lazy_stop_check": jcr.DEFAULT_LAZY_STOP_CHECK, "tpb": jcr.DEFAULT_TPB}),    
+    jcr.jcr_pi_contraction_cuda_reducemax.__name__: (False, jcr.jcr_pi_contraction_cuda_reducemax, DEFAULT_REPETITIONS, {"lazy_stop_check": jcr.DEFAULT_LAZY_STOP_CHECK, "tpb": jcr.DEFAULT_TPB}),
     jcr.jcr_pi_contraction_cuda_gridsync.__name__: (True, jcr.jcr_pi_contraction_cuda_gridsync, DEFAULT_REPETITIONS, {"tpb": jcr.DEFAULT_TPB})
     }
                                
