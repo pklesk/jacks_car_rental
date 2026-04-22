@@ -144,7 +144,7 @@ if __name__ == "__main__":
     pi_contraction_ds = {}
     pi_contraction_ks_main = {}
     pi_contraction_ks_eval_total = {}        
-    gpu_warmed_up = False
+    gpu_warmed_up = True # TODO False
     for index, (approach_name, (approach_on, approach_function, approach_repetitions, approach_extra_params)) in enumerate(APPROACHES_PI_CONTRACTION.items()):
         if approach_on:
             print(line_separator)
