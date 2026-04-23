@@ -62,8 +62,8 @@ JCR INFO:
 }
 JCR MDP JOINT DISTRIBUTION...
 UNPICKLE OBJECTS... [from file: ../mdp_joint_distrs/mdp_joint_distr_jcr_30_10.pkl]
-UNPICKLE OBJECTS DONE. [time: 0.7814438343048096 s]
-JCR MDP JOINT DISTRIBUTION READY. [shape: (961, 21, 61, 961), entries: 1183030401, type: float32, 4.41 GiB copied to device (gpu) in: 0.3535768985748291 s]
+UNPICKLE OBJECTS DONE. [time: 0.7966396808624268 s]
+JCR MDP JOINT DISTRIBUTION READY. [shape: (961, 21, 61, 961), entries: 1183030401, type: float32, 4.41 GiB copied to device (gpu) in: 0.3459906578063965 s]
 ============================================================================================================================================================================================================================================================
 V FOR INITIAL POLICY ZEROED. [shape: (961,)]
 RANDOM INITIAL POLICY [shape: (961,)]:
@@ -123,11 +123,12 @@ RANDOM INITIAL POLICY [shape: (961,)]:
   -7   2   6  -5  -7 -10   4]
 ============================================================================================================================================================================================================================================================
 PI CONTRACTION APPROACH 5: jcr_pi_contraction_cuda_reducemax...
+GPU WARMED UP.
 ---
 REPETITION: 1/1:
 JCR PI CONTRACTION CUDA REDUCEMAX... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07, lazy_stop_check: 5, tpb: 64]
 [bpg: 961 (implied by number of states)]
-JCR PI CONTRACTION CUDA REDUCEMAX DONE. [d_inf: 0.0, main iterations: 4, evaluation iterations total: 430, time: 4.679845571517944 s]
+JCR PI CONTRACTION CUDA REDUCEMAX DONE. [d_inf: 0.0, main iterations: 4, evaluation iterations total: 430, time: 2.289966583251953 s]
 ***
 SUMMARY:
 V OUT:
@@ -316,7 +317,7 @@ D_INF OF POLICY VS REF: 0
 D_INF (AT STOP) MEAN: 0.0
 MAIN ITERATIONS MEAN: 4.0
 EVAL ITERATIONS TOTAL MEAN: 430.0
-TIME MEAN: 4.679845571517944 s, STD: 0.0 s, STD_%: 0.0%
+TIME MEAN: 2.289966583251953 s, STD: 0.0 s, STD_%: 0.0%
 SPEEDUP VS REF: 1.0
 ============================================================================================================================================================================================================================================================
 ============================================================================================================================================================================================================================================================
@@ -325,6 +326,6 @@ PI CONTRACTION APPROACH 1: jcr_pi_contraction_cpu_numpy OFF.
 PI CONTRACTION APPROACH 2: jcr_pi_contraction_cpu_numba_parallel OFF.
 PI CONTRACTION APPROACH 3: jcr_pi_contraction_cuda_atomicmax OFF.
 PI CONTRACTION APPROACH 4: jcr_pi_contraction_cuda_atomicmaxplain OFF.
-PI CONTRACTION APPROACH 5: jcr_pi_contraction_cuda_reducemax (REFERENCE) -> MEAN MAIN ITERS: 4.0, MEAN EVAL ITERS TOTAL: 430.0, MEAN D_INF: 0.0, MEAN TIME: 4.679845571517944 s, TIME STD: 0.0 s, STD_%: 0.0%, SPEED-UP: 1.00
+PI CONTRACTION APPROACH 5: jcr_pi_contraction_cuda_reducemax (REFERENCE) -> MEAN MAIN ITERS: 4.0, MEAN EVAL ITERS TOTAL: 430.0, MEAN D_INF: 0.0, MEAN TIME: 2.289966583251953 s, TIME STD: 0.0 s, STD_%: 0.0%, SPEED-UP: 1.00
 PI CONTRACTION APPROACH 6: jcr_pi_contraction_cuda_gridsync OFF.
-JACK'S CAR RENTAL DONE. [hash string: 3200911796_96597_901_[1;30;10;10.0;-2.0;[3.0,4.0];[3.0,2.0];True;0.9;1.0e-04;1.0e-07;False;FFFFTF], time: 5.819854497909546 s]
+JACK'S CAR RENTAL DONE. [hash string: 3200911796_96597_901_[1;30;10;10.0;-2.0;[3.0,4.0];[3.0,2.0];True;0.9;1.0e-04;1.0e-07;False;FFFFTF], time: 3.466850757598877 s]

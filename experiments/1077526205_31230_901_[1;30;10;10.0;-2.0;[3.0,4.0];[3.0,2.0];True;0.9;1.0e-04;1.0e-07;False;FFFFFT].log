@@ -62,8 +62,8 @@ JCR INFO:
 }
 JCR MDP JOINT DISTRIBUTION...
 UNPICKLE OBJECTS... [from file: ../mdp_joint_distrs/mdp_joint_distr_jcr_30_10.pkl]
-UNPICKLE OBJECTS DONE. [time: 0.7859251499176025 s]
-JCR MDP JOINT DISTRIBUTION READY. [shape: (961, 21, 61, 961), entries: 1183030401, type: float32, 4.41 GiB copied to device (gpu) in: 0.35382890701293945 s]
+UNPICKLE OBJECTS DONE. [time: 0.7879483699798584 s]
+JCR MDP JOINT DISTRIBUTION READY. [shape: (961, 21, 61, 961), entries: 1183030401, type: float32, 4.41 GiB copied to device (gpu) in: 0.34564924240112305 s]
 ============================================================================================================================================================================================================================================================
 V FOR INITIAL POLICY ZEROED. [shape: (961,)]
 RANDOM INITIAL POLICY [shape: (961,)]:
@@ -123,13 +123,14 @@ RANDOM INITIAL POLICY [shape: (961,)]:
   -7   2   6  -5  -7 -10   4]
 ============================================================================================================================================================================================================================================================
 PI CONTRACTION APPROACH 6: jcr_pi_contraction_cuda_gridsync...
+GPU WARMED UP.
 ---
 REPETITION: 1/1:
 JCR PI CONTRACTION CUDA GRIDSYNC... [gamma: 0.9, eps: 0.0001, tolerance_v: 1e-07, tpb: 64, assumed max_bpg_gridsync: None]
-[discovered max_bpg_gridsync: 2040; time: 0.00014781951904296875 s]
+[discovered max_bpg_gridsync: 2040; time: 0.00011801719665527344 s]
 [kernel eval -> bpg: 961 (max_bpg_gridsync or number of states if smaller), tpb: 64, spb: 1]
 [kernel improve -> bpg: 961 (implied by number of states), tpb: 64]
-JCR PI CONTRACTION CUDA GRIDSYNC DONE. [d_inf: 6.1035156e-05, main iterations: 4, evaluation iterations total: 406, time: 9.886309623718262 s]
+JCR PI CONTRACTION CUDA GRIDSYNC DONE. [d_inf: 6.1035156e-05, main iterations: 4, evaluation iterations total: 406, time: 2.2785873413085938 s]
 ***
 SUMMARY:
 V OUT:
@@ -318,7 +319,7 @@ D_INF OF POLICY VS REF: 0
 D_INF (AT STOP) MEAN: 6.103515625e-05
 MAIN ITERATIONS MEAN: 4.0
 EVAL ITERATIONS TOTAL MEAN: 406.0
-TIME MEAN: 9.886309623718262 s, STD: 0.0 s, STD_%: 0.0%
+TIME MEAN: 2.2785873413085938 s, STD: 0.0 s, STD_%: 0.0%
 SPEEDUP VS REF: 1.0
 ============================================================================================================================================================================================================================================================
 ============================================================================================================================================================================================================================================================
@@ -328,5 +329,5 @@ PI CONTRACTION APPROACH 2: jcr_pi_contraction_cpu_numba_parallel OFF.
 PI CONTRACTION APPROACH 3: jcr_pi_contraction_cuda_atomicmax OFF.
 PI CONTRACTION APPROACH 4: jcr_pi_contraction_cuda_atomicmaxplain OFF.
 PI CONTRACTION APPROACH 5: jcr_pi_contraction_cuda_reducemax OFF.
-PI CONTRACTION APPROACH 6: jcr_pi_contraction_cuda_gridsync (REFERENCE) -> MEAN MAIN ITERS: 4.0, MEAN EVAL ITERS TOTAL: 406.0, MEAN D_INF: 6.103515625e-05, MEAN TIME: 9.886309623718262 s, TIME STD: 0.0 s, STD_%: 0.0%, SPEED-UP: 1.00
-JACK'S CAR RENTAL DONE. [hash string: 1077526205_31230_901_[1;30;10;10.0;-2.0;[3.0,4.0];[3.0,2.0];True;0.9;1.0e-04;1.0e-07;False;FFFFFT], time: 11.031086683273315 s]
+PI CONTRACTION APPROACH 6: jcr_pi_contraction_cuda_gridsync (REFERENCE) -> MEAN MAIN ITERS: 4.0, MEAN EVAL ITERS TOTAL: 406.0, MEAN D_INF: 6.103515625e-05, MEAN TIME: 2.2785873413085938 s, TIME STD: 0.0 s, STD_%: 0.0%, SPEED-UP: 1.00
+JACK'S CAR RENTAL DONE. [hash string: 1077526205_31230_901_[1;30;10;10.0;-2.0;[3.0,4.0];[3.0,2.0];True;0.9;1.0e-04;1.0e-07;False;FFFFFT], time: 3.4465444087982178 s]
