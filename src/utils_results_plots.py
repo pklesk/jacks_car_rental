@@ -105,7 +105,7 @@ if __name__ == "__main__":
     
     plt.xlim(first_x * 0.85, last_x * (COLUMN_SPACING ** 5.6)) 
     
-    plt.xlabel("PROBLEM SIZE ($n^2$)", fontsize=AXIS_LABEL_SIZE)
+    plt.xlabel("PROBLEM SIZE (ENTRIES IN JOINT DISTRIBUTION)", fontsize=AXIS_LABEL_SIZE)
     plt.ylabel("SPEED-UP VS. CPU", fontsize=AXIS_LABEL_SIZE)
     plt.title(title_str, fontsize=TITLE_SIZE, pad=15)
     
