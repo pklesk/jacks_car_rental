@@ -8,20 +8,19 @@ In this research, the *policy iteration* method has been applied, and the reposi
 four CUDA implementations of policy iteration (and two referential CPU-based implementation) for the JCR problem.
 
 <table>
-  <tr width="100%>
+  <tr width="100%">
     <td width="32%">$V_0$, $\pi_0$</td>
-    <td width="32%">$\xrightarrow{\textrm{E}} V_1 \approx v_{\pi_0}\xrightarrow{\textrm{I}}\pi_1$</td>
-    <td width="4%">$\cdots$</td>
-    <td width="32%">$\xrightarrow{\textrm{E}} V_1 \approx v_{\pi_0}\xrightarrow{\textrm{I}}\pi_1$</td>
+    <td width="32%">$\xrightarrow{\textrm{E}}V_1\approx v_{\pi_0}\xrightarrow{\textrm{I}}\pi_1$</td>
+    <td width="4%">AA</td>
+    <td>$\xrightarrow{\textrm{E}} V_k \approx v_{\pi_{k-1}}\xrightarrow{\textrm{I}}\pi_k$</td>
   </tr>
-  <tr>
-    <td><img src="extras/jcr_20_5_step_0.png"/></td>
-    <td><img src="extras/jcr_20_5_step_1.png"/></td>
-    <td>$\cdots$</td>
-    <td><img src="extras/jcr_20_5_step_4.png"/></td>
+  <tr width="100%">
+    <td width="32%"><img src="extras/jcr_20_5_step_0.png"/></td>
+    <td width="32%"><img src="extras/jcr_20_5_step_1.png"/></td>
+    <td width="4%">$\cdots$</td>
+    <td width="32%"><img src="extras/jcr_20_5_step_4.png"/></td>
   </tr>
 </table>
-
 
 ## Acknowledgments and credits
 - [Numba](https://numba.pydata.org): a high-performance just-in-time Python compiler.
