@@ -21,6 +21,9 @@ Numba translates Python code into its internal representation (Numba IR), which 
 JIT-compiled into executable machine code.
 Within the kernels, Numba exposes a programming interface closely mirroring the native CUDA C++ API.
 
+# Problem statement, settings
+TODO
+
 # Speed-ups
 <img src="extras/jcr_speedups.png"/>
 
@@ -72,6 +75,11 @@ Within the kernels, Numba exposes a programming interface closely mirroring the 
 | 35  | `jcr_pi_contraction_cuda_reducemax`             | 430          | 0.0 $\cdot$ 10<sup>-5</sup>          | 0.534         | $\times$ 163.7| 0.164        | $\times$ 533.1|
 | 36  | `jcr_pi_contraction_cuda_gridsync`              | 406          | 6.1 $\cdot$ 10<sup>-5</sup>          | 0.594         | $\times$ 147.2| 0.159        | $\times$ 549.8|
 
+# Usage for default settings
+TODO
+
+# Usage for larger settings
+TODO
 
 # Acknowledgements
 - [Numba](https://numba.pydata.org): a high-performance just-in-time Python compiler.
