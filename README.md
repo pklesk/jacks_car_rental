@@ -37,36 +37,36 @@ Within the kernels, Numba exposes a programming interface closely mirroring the 
 | 5   | `jcr_pi_contraction_cuda_reducemax`             | 325          | 0.6 $\cdot$ 10<sup>-4</sup> | 0.022         | $\times$ 86.1| 0.008         | $\times$ 236.7|
 | 6   | `jcr_pi_contraction_cuda_gridsync`              | 321          | 0.6 $\cdot$ 10<sup>-4</sup> | 0.007         | $\times$ 270.6| 0.006        | $\times$ 315.7|
 |     | problem size: ~6.5 $\cdot$ 10<sup>6</sup> <br/> ($N$=10, $M$=10; shape: 121 $\times$ 21 $\times$ 21 $\times$ 121, entries: 6 456 681)    |||||||
-| 7   | `jcr_pi_contraction_cpu_numpy`                  | 401 \| 408   | 0.9 $\cdot$ 10<sup>-4</sup> | 2.544         | $\times$ 1.0 | 1.441         | $\times$ 1.8 |
-| 8   | `jcr_pi_contraction_cpu_numba_parallel`         | 401 \| 408   | 0.9 $\cdot$ 10<sup>-4</sup> | 0.036         | $\times$ 70.7| 0.011         | $\times$ 231.3|
+| 7   | `jcr_pi_contraction_cpu_numpy`                  | 401, 408     | 0.9 $\cdot$ 10<sup>-4</sup> | 2.544         | $\times$ 1.0 | 1.441         | $\times$ 1.8 |
+| 8   | `jcr_pi_contraction_cpu_numba_parallel`         | 401, 408     | 0.9 $\cdot$ 10<sup>-4</sup> | 0.036         | $\times$ 70.7| 0.011         | $\times$ 231.3|
 | 9   | `jcr_pi_contraction_cuda_atomicmax`             | 435          | 0.6 $\cdot$ 10<sup>-4</sup> | 0.040         | $\times$ 63.6| 0.014         | $\times$ 181.7|
 | 10  | `jcr_pi_contraction_cuda_atomicmaxplain`        | 435          | 0.6 $\cdot$ 10<sup>-4</sup> | 0.040         | $\times$ 63.6| 0.015         | $\times$ 169.6|
 | 11  | `jcr_pi_contraction_cuda_reducemax`             | 435          | 0.6 $\cdot$ 10<sup>-4</sup> | 0.032         | $\times$ 79.5| 0.011         | $\times$ 231.3|
 | 12  | `jcr_pi_contraction_cuda_gridsync`              | 411          | 0.6 $\cdot$ 10<sup>-4</sup> | 0.010         | $\times$ 254.4| 0.007        | $\times$ 363.4|
 |     | problem size: ~8.8 $\cdot$ 10<sup>7</sup> <br/> ($N$=20, $M$=5; shape: 441 $\times$ 11 $\times$ 41 $\times$ 441, entries: 87 710 931)     |||||||
-| 13  | `jcr_pi_contraction_cpu_numpy`                  | 414 \| 420   | 0.6 $\cdot$ 10<sup>-4</sup> | 19.454        | $\times$ 1.0 | 10.541        | $\times$ 1.8 |
-| 14  | `jcr_pi_contraction_cpu_numba_parallel`         | 414 \| 420   | 0.6 $\cdot$ 10<sup>-4</sup> | 0.446         | $\times$ 43.6| 0.141         | $\times$ 138.0|
+| 13  | `jcr_pi_contraction_cpu_numpy`                  | 414, 420     | 0.6 $\cdot$ 10<sup>-4</sup> | 19.454        | $\times$ 1.0 | 10.541        | $\times$ 1.8 |
+| 14  | `jcr_pi_contraction_cpu_numba_parallel`         | 414, 420     | 0.6 $\cdot$ 10<sup>-4</sup> | 0.446         | $\times$ 43.6| 0.141         | $\times$ 138.0|
 | 15  | `jcr_pi_contraction_cuda_atomicmax`             | 410          | 0.6 $\cdot$ 10<sup>-4</sup> | 0.086         | $\times$ 226.2| 0.032        | $\times$ 607.9|
 | 16  | `jcr_pi_contraction_cuda_atomicmaxplain`        | 410          | 0.6 $\cdot$ 10<sup>-4</sup> | 0.085         | $\times$ 228.9| 0.039        | $\times$ 498.8|
 | 17  | `jcr_pi_contraction_cuda_reducemax`             | 410          | 0.6 $\cdot$ 10<sup>-4</sup> | 0.082         | $\times$ 237.2| 0.031        | $\times$ 627.5|
 | 18  | `jcr_pi_contraction_cuda_gridsync`              | 394          | 0.6 $\cdot$ 10<sup>-4</sup> | 0.072         | $\times$ 270.2| 0.031        | $\times$ 627.5|
 |     | problem size: ~1.7 $\cdot$ 10<sup>8</sup> <br/> ($N$=20, $M$=10; shape: 441 $\times$ 21 $\times$ 41 $\times$ 441, entries: 167 448 141)   |||||||
-| 19  | `jcr_pi_contraction_cpu_numpy`                  | 413 \| 406   | 0.6 $\cdot$ 10<sup>-4</sup> | 21.900        | $\times$ 1.0 | 11.207        | $\times$ 2.0 |
-| 20  | `jcr_pi_contraction_cpu_numba_parallel`         | 413 \| 406   | 0.6 $\cdot$ 10<sup>-4</sup> | 0.463         | $\times$ 47.3| 0.177         | $\times$ 123.7|
+| 19  | `jcr_pi_contraction_cpu_numpy`                  | 413, 406     | 0.6 $\cdot$ 10<sup>-4</sup> | 21.900        | $\times$ 1.0 | 11.207        | $\times$ 2.0 |
+| 20  | `jcr_pi_contraction_cpu_numba_parallel`         | 413, 406     | 0.6 $\cdot$ 10<sup>-4</sup> | 0.463         | $\times$ 47.3| 0.177         | $\times$ 123.7|
 | 21  | `jcr_pi_contraction_cuda_atomicmax`             | 400          | 0.6 $\cdot$ 10<sup>-4</sup> | 0.090         | $\times$ 243.3| 0.034        | $\times$ 644.1|
 | 22  | `jcr_pi_contraction_cuda_atomicmaxplain`        | 400          | 0.6 $\cdot$ 10<sup>-4</sup> | 0.089         | $\times$ 246.1| 0.043        | $\times$ 509.3|
 | 23  | `jcr_pi_contraction_cuda_reducemax`             | 400          | 0.6 $\cdot$ 10<sup>-4</sup> | 0.087         | $\times$ 251.7| 0.034        | $\times$ 644.1|
 | 24  | `jcr_pi_contraction_cuda_gridsync`              | 385          | 0.6 $\cdot$ 10<sup>-4</sup> | 0.077         | $\times$ 284.4| 0.033        | $\times$ 663.6|
 |     | problem size: ~6.2 $\cdot$ 10<sup>8</sup> <br/> ($N$=30, $M$=5; shape: 961 $\times$ 11 $\times$ 61 $\times$ 961, entries: 619 682 591)    |||||||
-| 25  | `jcr_pi_contraction_cpu_numpy`                  | 457 \| 453   | 0.6 $\cdot$ 10<sup>-4</sup> | 85.480        | $\times$ 1.0 | 44.117        | $\times$ 1.9 |
-| 26  | `jcr_pi_contraction_cpu_numba_parallel`         | 457 \| 453   | 0.6 $\cdot$ 10<sup>-4</sup> | 3.764         | $\times$ 22.7| 2.536         | $\times$ 33.7 |
+| 25  | `jcr_pi_contraction_cpu_numpy`                  | 457, 453     | 0.6 $\cdot$ 10<sup>-4</sup> | 85.480        | $\times$ 1.0 | 44.117        | $\times$ 1.9 |
+| 26  | `jcr_pi_contraction_cpu_numba_parallel`         | 457, 453     | 0.6 $\cdot$ 10<sup>-4</sup> | 3.764         | $\times$ 22.7| 2.536         | $\times$ 33.7 |
 | 27  | `jcr_pi_contraction_cuda_atomicmax`             | 440          | 0.6 $\cdot$ 10<sup>-4</sup> | 0.521         | $\times$ 164.1| 0.165        | $\times$ 518.1|
 | 28  | `jcr_pi_contraction_cuda_atomicmaxplain`        | 440          | 0.6 $\cdot$ 10<sup>-4</sup> | 0.509         | $\times$ 167.9| 0.165        | $\times$ 518.1|
 | 29  | `jcr_pi_contraction_cuda_reducemax`             | 440          | 0.6 $\cdot$ 10<sup>-4</sup> | 0.518         | $\times$ 165.0| 0.158        | $\times$ 541.0|
 | 30  | `jcr_pi_contraction_cuda_gridsync`              | 424          | 0.6 $\cdot$ 10<sup>-4</sup> | 0.591         | $\times$ 144.6| 0.156        | $\times$ 557.9|
 |     | problem size: ~1.2 $\cdot$ 10<sup>9</sup> <br/> ($N$=30, $M$=10; shape: 961 $\times$ 21 $\times$ 61 $\times$ 961, entries: 1 183 030 401) |||||||
-| 31  | `jcr_pi_contraction_cpu_numpy`                  | 427 \| 442   | 0.6 $\cdot$ 10<sup>-4</sup> | 87.424        | $\times$ 1.0 | 45.692        | $\times$ 1.9 |
-| 32  | `jcr_pi_contraction_cpu_numba_parallel`         | 427 \| 442   | 0.6 $\cdot$ 10<sup>-4</sup> | 4.017         | $\times$ 21.8| 2.744         | $\times$ 31.9 |
+| 31  | `jcr_pi_contraction_cpu_numpy`                  | 427, 442     | 0.6 $\cdot$ 10<sup>-4</sup> | 87.424        | $\times$ 1.0 | 45.692        | $\times$ 1.9 |
+| 32  | `jcr_pi_contraction_cpu_numba_parallel`         | 427, 442     | 0.6 $\cdot$ 10<sup>-4</sup> | 4.017         | $\times$ 21.8| 2.744         | $\times$ 31.9 |
 | 33  | `jcr_pi_contraction_cuda_atomicmax`             | 430          | 0.0 $\cdot$ 10<sup>-4</sup> | 0.538         | $\times$ 162.5| 0.170        | $\times$ 514.3|
 | 34  | `jcr_pi_contraction_cuda_atomicmaxplain`        | 430          | 0.0 $\cdot$ 10<sup>-4</sup> | 0.526         | $\times$ 166.2| 0.171        | $\times$ 511.3|
 | 35  | `jcr_pi_contraction_cuda_reducemax`             | 430          | 0.0 $\cdot$ 10<sup>-4</sup> | 0.534         | $\times$ 163.7| 0.164        | $\times$ 533.1|
