@@ -9,16 +9,16 @@ four CUDA implementations of policy iteration (and two referential CPU-based imp
 
 <table width="100%">
   <tr>
-    <td width="32%">$V_0$, $\pi_0$</td>
-    <td width="32%">$\xrightarrow{\textrm{E}}V_1\approx v_{\pi_0}\xrightarrow{\textrm{I}}\pi_1$</td>
+    <td width="30%">$V_0$, $\pi_0$</td>
+    <td width="30%">$\xrightarrow{\textrm{E}}V_1\approx v_{\pi_0}\xrightarrow{\textrm{I}}\pi_1$</td>
     <td width="4%">$\cdots$</td>
-    <td>$\xrightarrow{\textrm{E}}V_4\approx v_{\pi_3}\xrightarrow{\textrm{I}}\pi_4=\pi^*$</td>
+    <td width="30%">$\xrightarrow{\textrm{E}}V_4\approx v_{\pi_3}\xrightarrow{\textrm{I}}\pi_4=\pi^*$</td>
   </tr>
   <tr>
-      <td width="32%"><img src="extras/jcr_20_5_step_0.png"/></td>
-      <td width="32%"><img src="extras/jcr_20_5_step_1.png"/></td>
+      <td width="30%"><img src="extras/jcr_20_5_step_0.png"/></td>
+      <td width="30%"><img src="extras/jcr_20_5_step_1.png"/></td>
       <td width="4%">$\cdots$</td>
-      <td width="32%"><img src="extras/jcr_20_5_step_4.png"/></td>
+      <td width="30%"><img src="extras/jcr_20_5_step_4.png"/></td>
     </tr>  
 </table>
 
