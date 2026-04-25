@@ -6,26 +6,46 @@ JCR, devised by Sutton and Barto (2020), is a classic problem of finding the opt
 a fully known MDP (Markov Decision Process), i.e., given its joint-probability distribution.
 In this research, the *policy iteration* method has been applied, and the repository contains
 four CUDA implementations of policy iteration (and two referential CPU-based implementation) for the JCR problem.
-ZZZ
 
-<table width="100%">
-  <tr>
-    <td width="30%">$V_0$, $\pi_0$<br/></td>
-    <td width="30%">$\xrightarrow{\textrm{E}}V_1\approx v_{\pi_0}\xrightarrow{\textrm{I}}\pi_1$<br/></td>
-    <td width="4%">$\cdots$<br/></td>
-    <td width="30%">$\xrightarrow{\textrm{E}}V_4\approx v_{\pi_3}\xrightarrow{\textrm{I}}\pi_4=\pi^*$<br/></td>
+QQQQEEEE
+
+<table>
+  <tr width="100%">
+    <td>$V_0$, $\pi_0$<br/><img src="extras/jcr_20_5_step_0.png"/></td>
+    <td>$\xrightarrow{\textrm{E}}V_1\approx v_{\pi_0}$ $\xrightarrow{\textrm{I}}\pi_1$<br/><img src="extras/jcr_20_5_step_1.png"/></td>
+    <td>$\cdots$<br/></td>
+    <td>$\xrightarrow{\textrm{E}}V_4\approx v_{\pi_3}\xrightarrow{\textrm{I}}\pi_4=\pi^*$<br/><img src="extras/jcr_20_5_step_4.png"/></td>
   </tr>
-  <tr>
-      <td width="30%"><img src="extras/jcr_20_5_step_0.png"/></td>
-      <td width="30%"><img src="extras/jcr_20_5_step_1.png"/></td>
-      <td width="4%">$\cdots$</td>
-      <td width="30%"><img src="extras/jcr_20_5_step_4.png"/></td>
-    </tr>  
 </table>
 
-| $V_0, \pi_0$ | ${\xrightarrow{\textrm{E}}V_1\approx v_{\pi_0}\xrightarrow{\textrm{I}}\pi_1}$ | $\cdots$ | $\xrightarrow{\textrm{E}}V_4\approx v_{\pi_3}\xrightarrow{\textrm{I}}\pi_4=\pi^*$ |
-|:---|:---|:---|:---|
-| <img src="extras/jcr_20_5_step_0.png" width="300"> | <img src="extras/jcr_20_5_step_1.png" width="300"> | $\cdots$ | <img src="extras/jcr_20_5_step_4.png" width="300"> |
+<table>
+  <tr>
+    <td valign="top">
+      <div style="min-width: 200px;">
+        $V_0, \pi_0$<br/><br/>
+        <img src="extras/jcr_20_5_step_0.png" width="100%"/>
+      </div>
+    </td>
+    
+    <td valign="top">
+      <div style="min-width: 320px;">
+        $\xrightarrow{\textrm{E}}V_1\approx v_{\pi_0}\xrightarrow{\textrm{I}}\pi_1$<br/><br/>
+        <img src="extras/jcr_20_5_step_1.png" width="100%"/>
+      </div>
+    </td>
+    
+    <td valign="center">
+      <div style="min-width: 50px; text-align: center;">$\cdots$</div>
+    </td>
+    
+    <td valign="top">
+      <div style="min-width: 320px;">
+        $\xrightarrow{\textrm{E}}V_4\approx v_{\pi_3}\xrightarrow{\textrm{I}}\pi_4=\pi^*$<br/><br/>
+        <img src="extras/jcr_20_5_step_4.png" width="100%"/>
+      </div>
+    </td>
+  </tr>
+</table>
 
 ## Acknowledgments and credits
 - [Numba](https://numba.pydata.org): a high-performance just-in-time Python compiler.
