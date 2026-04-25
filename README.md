@@ -16,6 +16,12 @@ four CUDA implementations of policy iteration (and two referential CPU-based imp
   </tr>
 </table>
 
-- [Numba](https://numba.pydata.org): a high-performance just-in-time Python compiler.
+Implementations of CUDA kernels have been carried out using *Numba* - a just-in-time compiler for Python.
+Numba translates Python code into its internal representation (Numba IR), which is then lowered via the LLVM and NVVM-based pipeline into PTX and finally 
+JIT-compiled into executable machine code.
+Within the kernels, Numba exposes a programming interface closely mirroring the native CUDA C++ API.
 
-END
+
+# Acknowledgements
+- [Numba](https://numba.pydata.org): a high-performance just-in-time Python compiler.
+- Richard S. Sutton and Andrew G. Barto. 2020. *Reinforcement Learning: An Introduction* (2nd ed.). MIT Press, Cambridge, MA, USA.
