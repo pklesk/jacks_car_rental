@@ -23,8 +23,8 @@ ZZZ
     </tr>  
 </table>
 
-| $V_0, \pi_0$ | $\xrightarrow{\textrm{E}}V_1\approx v_{\pi_0}\xrightarrow{\textrm{I}}\pi_1$ | $\cdots$ | $\xrightarrow{\textrm{E}}V_4\approx v_{\pi_3}\xrightarrow{\textrm{I}}\pi_4=\pi^*$ |
-|:---:|:---:|:---:|:---:|
+| $V_0, \pi_0$ | ${\xrightarrow{\textrm{E}}V_1\approx v_{\pi_0}\xrightarrow{\textrm{I}}\pi_1}$ | $\cdots$ | $\xrightarrow{\textrm{E}}V_4\approx v_{\pi_3}\xrightarrow{\textrm{I}}\pi_4=\pi^*$ |
+|:---|:---|:---|:---|
 | <img src="extras/jcr_20_5_step_0.png" width="300"> | <img src="extras/jcr_20_5_step_1.png" width="300"> | $\cdots$ | <img src="extras/jcr_20_5_step_4.png" width="300"> |
 
 ## Acknowledgments and credits
