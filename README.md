@@ -7,7 +7,10 @@ a fully known MDP (Markov Decision Process), i.e., given its joint-probability d
 In this research, the *policy iteration* method has been applied, and the repository contains
 four CUDA implementations of policy iteration (and two referential CPU-based implementation) for the JCR problem.
 
-TEST ENTRY
+| parameter | description |
+|:--------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------|
+| <img src="extras/jcr_20_5_step_0.png"/> | <img src="extras/jcr_20_5_step_1.png"/> |                                                                            
+
 
 ## Acknowledgments and credits
 - [Numba](https://numba.pydata.org): a high-performance just-in-time Python compiler.
