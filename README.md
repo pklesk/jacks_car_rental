@@ -7,9 +7,20 @@ a fully known MDP (Markov Decision Process), i.e., given its joint-probability d
 In this research, the *policy iteration* method has been applied, and the repository contains
 four CUDA implementations of policy iteration (and two referential CPU-based implementation) for the JCR problem.
 
-| parameter | description |
-|:--------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------|
-| <img src="extras/jcr_20_5_step_0.png"/> | <img src="extras/jcr_20_5_step_1.png"/> |                                                                            
+<table>
+  <tr width="100%>
+    <td width="32%">$V_0$, $\pi_0$</td>
+    <td width="32%">$\xrightarrow{\textrm{E}} V_1 \approx v_{\pi_0}\xrightarrow{\textrm{I}}\pi_1$</td>
+    <td width="4%">$\cdots$</td>
+    <td width="32%">$\xrightarrow{\textrm{E}} V_1 \approx v_{\pi_0}\xrightarrow{\textrm{I}}\pi_1$</td>
+  </tr>
+  <tr>
+    <td><img src="extras/jcr_20_5_step_0.png"/></td>
+    <td><img src="extras/jcr_20_5_step_1.png"/></td>
+    <td>$\cdots$</td>
+    <td><img src="extras/jcr_20_5_step_4.png"/></td>
+  </tr>
+</table>
 
 
 ## Acknowledgments and credits
