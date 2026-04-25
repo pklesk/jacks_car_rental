@@ -21,7 +21,7 @@ Numba translates Python code into its internal representation (Numba IR), which 
 JIT-compiled into executable machine code.
 Within the kernels, Numba exposes a programming interface closely mirroring the native CUDA C++ API.
 
-# Problem statement, settings
+# Problem statement and settings
 TODO
 
 # Speed-ups
