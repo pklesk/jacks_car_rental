@@ -1,4 +1,4 @@
-# CUDA implementations of policy iteration algorithm for Jack's Car Rental (JCR)
+# CUDA-based policy iteration for Jack's Car Rental (JCR)
 The repository constitutes a part of research on CUDA computational approaches for algorithms based on 
 *contraction mapping theorem* due to Banach (a.k.a. the fixed-point theorem).
 
