@@ -7,7 +7,7 @@ if __name__ == "__main__":
     series = [
         {
             "jcr_pi_contraction_cpu_numpy": [1.894, 2.544, 19.454, 21.900, 85.480, 87.424],
-            "jcr_pi_contraction_cpu_numba_parallel": [0.027, 0.036, 0.446, 0.463, 3.764, 4.017],
+            "jcr_pi_contraction_cpu_numba_parallel": [0.028, 0.036, 0.446, 0.463, 3.764, 4.017],
         },
         {
             "jcr_pi_contraction_cpu_numpy": [1.054, 1.441, 10.541, 11.207, 44.117, 45.692],
