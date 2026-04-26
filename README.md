@@ -46,8 +46,8 @@ the number of entries in the distribution $P$ is: $(2N+1)\cdot(N+1)^2\cdot(N+1)^
 the problem size.
 
 In CUDA approaches, we assume that $P$ has been properly precomputed and placed in the device memory
-as a four-dimensional array $\code{dev\_P[:, :, :, :]}$, and available to kernels. 
-The efficient order of indexes (for frequent coalesced reads) is \code{dev\_P[$s$, $a$, $r'$, $s'$]}.
+as a four-dimensional array `dev_P[:, :, :, :]`, and available to kernels. 
+The efficient order of indexes (for frequent coalesced reads) is `dev_P[s, a, r', s']`.
 
 
 # Speed-ups
