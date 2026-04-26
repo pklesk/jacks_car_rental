@@ -1,3 +1,6 @@
+__author__ = "Przemysław Klęsk"
+__email__ = "pklesk@zut.edu.pl"
+
 import matplotlib.pyplot as plt
 
 if __name__ == "__main__":
