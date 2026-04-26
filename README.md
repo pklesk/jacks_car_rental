@@ -2,7 +2,7 @@
 The repository constitutes a part of research on CUDA computational approaches for algorithms based on 
 *contraction mapping theorem* due to Banach, a.k.a. the fixed-point theorem.
 
-JCR, devised by Sutton and Barto (2020), is a classic problem of finding the optimal policy for 
+JCR, devised by Sutton and Barto (1998, 2020), is a classic problem of finding the optimal policy for 
 a fully known MDP (Markov Decision Process), i.e., given its joint-probability distribution.
 In this research, the *policy iteration* method has been applied, and the repository contains
 four CUDA implementations of policy iteration for the JCR problem (and two referential CPU-based implementations).
@@ -17,12 +17,32 @@ four CUDA implementations of policy iteration for the JCR problem (and two refer
 </table>
 
 Implementations of CUDA kernels have been carried out using *Numba* - a just-in-time compiler for Python.
-Numba translates Python code into its internal representation (Numba IR), which is then lowered via the LLVM and NVVM-based pipeline into PTX and finally 
+Numba exposes a programming interface closely mirroring the native CUDA C++ API, and translates kernel functions
+into its internal representation (Numba IR), which is then lowered via the LLVM and NVVM-based pipeline into PTX and finally 
 JIT-compiled into executable machine code.
-Within the kernels, Numba exposes a programming interface closely mirroring the native CUDA C++ API.
 
 # Problem statement and settings
-TODO
+We consider several sizes of the JCR problem, but in its original setting (Sutton and Barto; 1998, 2020), JCR is defined as follows. 
+Jack manages two locations for a nationwide car rental company. 
+Each day, the number of clients requesting cars at each location and the number of cars returned follow Poisson distributions 
+$P(k;\lambda)=\lambda^k e^{-\lambda} / k!$, defined by parameters $\lambda_{1,\textrm{req}}=3, \lambda_{1,\textrm{ret}}=2$ 
+and $\lambda_{2,\textrm{req}}=4, \lambda_{2,\textrm{ret}}=2$,
+respectively for locations $1$ and $2$. Each location can store up to $N=20$ cars (any cars returned when the lot
+is full are redirected elsewhere). Jack is allowed to move cars overnight between the locations, at most $M=5$.
+For every car rented, Jack earns a \$10 profit, whereas moving a car costs \$2.
+This problem can be modeled as a finite MDP, where the state is the number of cars at each location at the end of the day,
+with the goal to find the best policy (strategy) for Jack.
+
+Given the $N, M$ constants, the number of distinct states in the MDP for JCR is $(N+1)^2$ and the number
+of distinct actions is $2M + 1$. The set of actions is $\{-M, \ldots, 0, \ldots, M\}$,
+where positive numbers represent cars moved from location $1$ to $2$,
+and negative ones the reverse direction. The number
+of distinct stochastic rewards is $2N + 1$, implied by the possible totals of rental requests
+at both locations: $\{0, 1, \ldots, 2N\}$. Cars that Jack decides to move, by taking a specific
+action, incur a deterministic cost, which can be treated as a constant negative offset to the stochastic rewards
+and thus factored out from the joint distribution $P(r,s'|s,a)$. Hence, 
+the number of entries in the distribution $P$ is: $(2N+1)\cdot(N+1)^2\cdot(N+1)^2\cdot(2M + 1)$, and this number defines
+the problem size.
 
 # Speed-ups
 <img src="extras/jcr_speedups.png"/>
@@ -83,4 +103,5 @@ TODO
 
 # Acknowledgements
 - [Numba](https://numba.pydata.org): a high-performance just-in-time Python compiler.
+- Richard S. Sutton and Andrew G. Barto. 1998. *Reinforcement Learning: An Introduction*. MIT Press, Cambridge, MA, USA.
 - Richard S. Sutton and Andrew G. Barto. 2020. *Reinforcement Learning: An Introduction* (2nd ed.). MIT Press, Cambridge, MA, USA.
