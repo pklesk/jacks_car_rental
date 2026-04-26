@@ -145,7 +145,7 @@ JACK'S CAR RENTAL DONE. [hash string: 1321393540_15031_565_[1;10;5;10.0;-2.0;[3.
 
 
 # Usage for other (larger) settings
-For executions on other settings, one needs to re-edit the global settings in `src/jcr.py`:
+For executions on other settings, one can re-edit the global settings in `src/jcr.py`:
 ```python
 # global settings
 MAX_CARS_AT_LOC = 10
@@ -174,6 +174,7 @@ APPROACHES_PI_CONTRACTION = { # approaches for contraction iteration (policy ite
     jcr.jcr_pi_contraction_cuda_gridsync.__name__: (True, jcr.jcr_pi_contraction_cuda_gridsync, DEFAULT_REPETITIONS, {"tpb": jcr.DEFAULT_TPB})
     }
 ```
+The dictionary `APPROACHES_PI_CONTRACTION` allows to turn on/off particular approaches and to modify their default parameters.
 
 **Important note**: due to the GitHub's file size limit, in the repository we explicitly store pickled files with $P$ distributions (4-D arrays of `float32` numbers) 
 only for $N=10, M=5$ and $N=10, M=10$ (inside folder `mdp_joint_distrs/`). To precompute and pickle distributions for larger settings, set `MAKE_JCR_MDP_JOINT_DISTR = True`. 
