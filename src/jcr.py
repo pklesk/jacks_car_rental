@@ -7,7 +7,7 @@ import math
 import itertools
 import time
 from numba import cuda, jit, prange
-from numba import void, int8, int16, int32, float32, boolean
+from numba import void, int8, int16, int32, float32, float64, boolean
 from numba.core.errors import NumbaPerformanceWarning
 import warnings
 warnings.simplefilter("ignore", category=NumbaPerformanceWarning)
@@ -28,8 +28,8 @@ RETURN_POISSON_LAMBDAS_AT_LOC = [3.0, 2.0]
 STATES = np.array(list(itertools.product(np.arange(0, MAX_CARS_AT_LOC + 1), np.arange(0, MAX_CARS_AT_LOC + 1))), dtype=np.int16)
 ACTIONS = np.arange(-MAX_CARS_MOVED, MAX_CARS_MOVED + 1, dtype=np.int16)
 MAX_N = MAX_CARS_AT_LOC
-REQUEST_DISTRS_AT_LOCS = [np.array([l**n * np.exp(-l) / math.factorial(n) for n in range(MAX_N + 1)]) for l in REQUEST_POISSON_LAMBDAS_AT_LOC]
-RETURN_DISTRS_AT_LOCS = [np.array([l**n * np.exp(-l) / math.factorial(n) for n in range(MAX_N + 1)]) for l in RETURN_POISSON_LAMBDAS_AT_LOC]
+REQUEST_DISTRS_AT_LOCS = np.array([np.array([l**n * np.exp(-l) / math.factorial(n) for n in range(MAX_N + 1)]) for l in REQUEST_POISSON_LAMBDAS_AT_LOC])
+RETURN_DISTRS_AT_LOCS = np.array([np.array([l**n * np.exp(-l) / math.factorial(n) for n in range(MAX_N + 1)]) for l in RETURN_POISSON_LAMBDAS_AT_LOC])
 for distrs in [REQUEST_DISTRS_AT_LOCS, RETURN_DISTRS_AT_LOCS]: 
     for i in range(len(distrs)):
         distrs[i][-1] = 1.0 - np.sum(distrs[i][:-1]) # summation of distribution to 1 
@@ -48,37 +48,41 @@ assert (MAX_CARS_AT_LOC + 1)**2 <= MAX_N_STATES, f"Maximum number of states {MAX
 def make_jcr_mdp_joint_distr(states=STATES, actions=ACTIONS, rewards_rental=REWARDS_RENTAL, request_distrs_at_locs=REQUEST_DISTRS_AT_LOCS, return_distrs_at_locs=RETURN_DISTRS_AT_LOCS, return_as_float32_array=True):
     print("MAKE JCR MDP JOINT DISTR...")
     t1 = time.time()
-    max_cars_at_loc = int(np.sqrt(states.shape[0])) - 1
     P = np.zeros((states.shape[0], actions.shape[0], rewards_rental.shape[0], states.shape[0])) # float64 when being prepared, before the return can be converted to float32
     print(f"[shape of P to prepare: {P.shape}, entries: {P.size}]")
     for s_index in range(states.shape[0]):
         print(f"[progress: {s_index + 1}/{states.shape[0]}]")
-        s_cars_at_0, s_cars_at_1 = states[s_index]
-        for a_index in range(actions.shape[0]):
-            a = actions[a_index]
-            cars_moved = min(s_cars_at_0, a) if a > 0 else min(s_cars_at_1, -a)
-            cars_at_0 = s_cars_at_0 - np.sign(a) * cars_moved
-            cars_at_1 = s_cars_at_1 + np.sign(a) * cars_moved                
-            cars_at_0 = min(cars_at_0, max_cars_at_loc) 
-            cars_at_1 = min(cars_at_1, max_cars_at_loc)                                   
-            for request_index in range(states.shape[0]):
-                request = states[request_index]
-                P_request = request_distrs_at_locs[0][request[0]] * request_distrs_at_locs[1][request[1]] 
-                rented_at_0 = min(request[0], cars_at_0)
-                rented_at_1 = min(request[1], cars_at_1)
-                reward_index = rented_at_0 + rented_at_1                                       
-                for return_index in range(states.shape[0]):
-                    returned_at_0, returned_at_1 = states[return_index]
-                    P_return = return_distrs_at_locs[0][returned_at_0] * return_distrs_at_locs[1][returned_at_1]                    
-                    cars_at_0_next = min(cars_at_0 - rented_at_0 + returned_at_0, max_cars_at_loc)
-                    cars_at_1_next = min(cars_at_1 - rented_at_1 + returned_at_1, max_cars_at_loc)
-                    s_next_index = cars_at_0_next * (max_cars_at_loc + 1) + cars_at_1_next                                                              
-                    P[s_index, a_index, reward_index, s_next_index] += P_request * P_return
+        make_jcr_mdp_joint_distr_body(states, actions, request_distrs_at_locs, return_distrs_at_locs, P, s_index)
     if return_as_float32_array:
         P = P.astype(np.float32)                                                             
     t2 = time.time()
     print(f"MAKE JCR MDP JOINT DISTR DONE. [time: {t2 - t1} s]")
     return P    
+
+@jit(void(int16[:, :], int16[:], float64[:, :], float64[:, :], float64[:, :, :, :], int16), nopython=True, parallel=True, cache=True)
+def make_jcr_mdp_joint_distr_body(states, actions, request_distrs_at_locs, return_distrs_at_locs, P, s_index):
+    max_cars_at_loc = int(np.sqrt(states.shape[0])) - 1
+    s_cars_at_0, s_cars_at_1 = states[s_index]
+    for a_index in prange(actions.shape[0]):
+        a = actions[a_index]
+        cars_moved = min(s_cars_at_0, a) if a > 0 else min(s_cars_at_1, -a)
+        cars_at_0 = s_cars_at_0 - np.sign(a) * cars_moved
+        cars_at_1 = s_cars_at_1 + np.sign(a) * cars_moved                
+        cars_at_0 = min(cars_at_0, max_cars_at_loc) 
+        cars_at_1 = min(cars_at_1, max_cars_at_loc)                                   
+        for request_index in range(states.shape[0]):
+            request = states[request_index]
+            P_request = request_distrs_at_locs[0][request[0]] * request_distrs_at_locs[1][request[1]] 
+            rented_at_0 = min(request[0], cars_at_0)
+            rented_at_1 = min(request[1], cars_at_1)
+            reward_index = rented_at_0 + rented_at_1                                       
+            for return_index in range(states.shape[0]):
+                returned_at_0, returned_at_1 = states[return_index]
+                P_return = return_distrs_at_locs[0][returned_at_0] * return_distrs_at_locs[1][returned_at_1]                    
+                cars_at_0_next = min(cars_at_0 - rented_at_0 + returned_at_0, max_cars_at_loc)
+                cars_at_1_next = min(cars_at_1 - rented_at_1 + returned_at_1, max_cars_at_loc)
+                s_next_index = cars_at_0_next * (max_cars_at_loc + 1) + cars_at_1_next                                                              
+                P[s_index, a_index, reward_index, s_next_index] += P_request * P_return
 
 def jcr_pi_contraction_cpu_numpy(policy_in, V_in, P, 
                              gamma, eps, tolerance_v,                               
@@ -331,7 +335,7 @@ def jcr_pi_contraction_cuda_atomicmax_dreset(d): # called exactly for 1 thread
 def jcr_pi_contraction_cuda_atomicmax_psreset(policy_stable): # called exactly for 1 thread
     policy_stable[0] = int32(1) 
                 
-@cuda.jit(void(float32[:,:,:,:], float32[:], int16[:], float32, float32, float32[:], float32[:]))
+@cuda.jit(void(float32[:, :, :, :], float32[:], int16[:], float32, float32, float32[:], float32[:]))
 def jcr_pi_contraction_cuda_atomicmax_eval(P, V_in, policy, reward_car_moved, gamma, V_out, d):
     const_states = cuda.const.array_like(STATES)
     const_actions = cuda.const.array_like(ACTIONS)
@@ -374,7 +378,7 @@ def jcr_pi_contraction_cuda_atomicmax_eval(P, V_in, policy, reward_car_moved, ga
         cuda.atomic.max(d, 0, math.fabs(v - v_new))
         V_out[s_index] = v_new        
 
-@cuda.jit(void(float32[:,:,:,:], float32[:], float32, float32, int16[:], int32[:]))
+@cuda.jit(void(float32[:, :, :, :], float32[:], float32, float32, int16[:], int32[:]))
 def jcr_pi_contraction_cuda_atomicmax_improve(P, V, reward_car_moved, gamma, policy, policy_stable):
     const_states = cuda.const.array_like(STATES)
     const_actions = cuda.const.array_like(ACTIONS)
@@ -495,7 +499,7 @@ def jcr_pi_contraction_cuda_atomicmaxplain(policy_in, V_in, dev_P,
         print(f"JCR PI CONTRACTION CUDA ATOMICMAXPLAIN DONE. [d_inf: {str(d[0])}, main iterations: {k_main}, evaluation iterations total: {k_eval_total}, time: {t2 - t1} s]")    
     return policy_out, V_out, d[0], k_main, k_eval_total, t2 - t1, history_for_plots
 
-@cuda.jit(void(float32[:,:,:,:], float32[:], int16[:], float32, float32, float32[:], float32[:]))
+@cuda.jit(void(float32[:, :, :, :], float32[:], int16[:], float32, float32, float32[:], float32[:]))
 def jcr_pi_contraction_cuda_atomicmaxplain_eval(P, V_in, policy, reward_car_moved, gamma, V_out, d):
     const_states = cuda.const.array_like(STATES)
     const_actions = cuda.const.array_like(ACTIONS)
@@ -531,7 +535,7 @@ def jcr_pi_contraction_cuda_atomicmaxplain_eval(P, V_in, policy, reward_car_move
         cuda.atomic.max(d, 0, math.fabs(v - v_new))
         V_out[s_index] = v_new
         
-@cuda.jit(void(float32[:,:,:,:], float32[:], float32, float32, int16[:], int32[:]))
+@cuda.jit(void(float32[:, :, :, :], float32[:], float32, float32, int16[:], int32[:]))
 def jcr_pi_contraction_cuda_atomicmaxplain_improve(P, V, reward_car_moved, gamma, policy, policy_stable):
     const_states = cuda.const.array_like(STATES)
     const_actions = cuda.const.array_like(ACTIONS)
@@ -645,7 +649,7 @@ def jcr_pi_contraction_cuda_reducemax(policy_in, V_in, dev_P,
         print(f"JCR PI CONTRACTION CUDA REDUCEMAX DONE. [d_inf: {str(d[0])}, main iterations: {k_main}, evaluation iterations total: {k_eval_total}, time: {t2 - t1} s]")    
     return policy_out, V_out, d[0], k_main, k_eval_total, t2 - t1, history_for_plots                
 
-@cuda.jit(void(float32[:,:,:,:], float32[:], int16[:], float32, float32, float32[:], float32[:]))
+@cuda.jit(void(float32[:, :, :, :], float32[:], int16[:], float32, float32, float32[:], float32[:]))
 def jcr_pi_contraction_cuda_reducemax_eval(P, V_in, policy, reward_car_moved, gamma, V_out, d):
     const_states = cuda.const.array_like(STATES)
     const_actions = cuda.const.array_like(ACTIONS)
@@ -712,7 +716,7 @@ def jcr_pi_contraction_cuda_reducemax_dreduce(d):
     if t == 0:    
         d[0] = shared_d[0]
 
-@cuda.jit(void(float32[:,:,:,:], float32[:], float32, float32, int16[:], int32[:]))
+@cuda.jit(void(float32[:, :, :, :], float32[:], float32, float32, int16[:], int32[:]))
 def jcr_pi_contraction_cuda_reducemax_improve(P, V, reward_car_moved, gamma, policy, policy_stable):
     const_states = cuda.const.array_like(STATES)
     const_actions = cuda.const.array_like(ACTIONS)
@@ -872,7 +876,7 @@ def jcr_pi_contraction_cuda_gridsync_reset(d, stop_all): # called exactly for 1 
     d[0] = float32(0.0)
     stop_all[0] = False
 
-@cuda.jit(void(float32[:,:,:,:], float32[:], int16[:], float32, float32, float32, float32[:], float32[:], int32[:], boolean[:]))
+@cuda.jit(void(float32[:, :, :, :], float32[:], int16[:], float32, float32, float32, float32[:], float32[:], int32[:], boolean[:]))
 def jcr_pi_contraction_cuda_gridsync_eval(P, V_in, policy, reward_car_moved, gamma, eps, V_out, d, k_eval_total, stop_all):
     const_states = cuda.const.array_like(STATES)
     const_actions = cuda.const.array_like(ACTIONS)
@@ -944,7 +948,7 @@ def jcr_pi_contraction_cuda_gridsync_eval(P, V_in, policy, reward_car_moved, gam
 def jcr_pi_contraction_cuda_gridsync_psreset(policy_stable): # called exactly for 1 thread
     policy_stable[0] = int32(1) 
         
-@cuda.jit(void(float32[:,:,:,:], float32[:], float32, float32, int16[:], int32[:]))
+@cuda.jit(void(float32[:, :, :, :], float32[:], float32, float32, int16[:], int32[:]))
 def jcr_pi_contraction_cuda_gridsync_improve(P, V, reward_car_moved, gamma, policy, policy_stable):
     const_states = cuda.const.array_like(STATES)
     const_actions = cuda.const.array_like(ACTIONS)
