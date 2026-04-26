@@ -102,9 +102,9 @@ The efficient order of indexes (for frequent coalesced reads) is `dev_P[s, a, r'
 | 36  | `jcr_pi_contraction_cuda_gridsync`              | 406          | 6.1 $\cdot$ 10<sup>-5</sup>          | 0.594         | $\times$ 147.2| 0.159        | $\times$ 549.8|
 
 
-# Usage for default small settings
+# Usage for small settings
 By launching `python main.py` or `python3 main.py`, one executes 10 repetitions of policy iteration algorithm using all 6 approaches (two CPU-based and four GPU/CUDA-based)
-for the default small settings of $N=10$, $M=5$. This produces the following print-out (abbreviated here):
+for the program's default small settings of $N=10$, $M=5$. This produces the following print-out (abbreviated here):
 ```bash
 JACK'S CAR RENTAL STARTING...
 HASH STRING: 1321393540_15031_565_[1;10;5;10.0;-2.0;[3.0,4.0];[3.0,2.0];True;0.9;1.0e-04;1.0e-07;False;TTTTTT]
@@ -144,8 +144,40 @@ JACK'S CAR RENTAL DONE. [hash string: 1321393540_15031_565_[1;10;5;10.0;-2.0;[3.
 ```
 
 
-# Usage for larger settings
-TODO
+# Usage for other (larger) settings
+For executions on other settings, one needs to re-edit the global settings in `src/jcr.py`:
+```python
+# global settings
+MAX_CARS_AT_LOC = 10
+MAX_CARS_MOVED = 5
+REWARD_CAR_RENTED = np.float32(10.0)
+REWARD_CAR_MOVED = np.float32(-2.0)
+REQUEST_POISSON_LAMBDAS_AT_LOC = [3.0, 4.0]
+RETURN_POISSON_LAMBDAS_AT_LOC = [3.0, 2.0]
+```
+Also, the settings of a particular experiment can be changed (in `src/main.py`):
+```python
+# experiment settings
+MAKE_JCR_MDP_JOINT_DISTR = False # False implies the distribution shall be read from a .pkl file prepared earlier
+SEED = 1
+GAMMA = 0.9
+EPS = 1e-4
+TOLERANCE_V = 1e-7
+PLOTS = True
+
+APPROACHES_PI_CONTRACTION = { # approaches for contraction iteration (policy iteration)
+    jcr.jcr_pi_contraction_cpu_numpy.__name__: (True, jcr.jcr_pi_contraction_cpu_numpy, DEFAULT_REPETITIONS, {}),
+    jcr.jcr_pi_contraction_cpu_numba_parallel.__name__: (True, jcr.jcr_pi_contraction_cpu_numba_parallel, DEFAULT_REPETITIONS, {}), 
+    jcr.jcr_pi_contraction_cuda_atomicmax.__name__: (True, jcr.jcr_pi_contraction_cuda_atomicmax, DEFAULT_REPETITIONS, {"lazy_stop_check": jcr.DEFAULT_LAZY_STOP_CHECK, "tpb": jcr.DEFAULT_TPB}), 
+    jcr.jcr_pi_contraction_cuda_atomicmaxplain.__name__: (True, jcr.jcr_pi_contraction_cuda_atomicmaxplain, DEFAULT_REPETITIONS, {"lazy_stop_check": jcr.DEFAULT_LAZY_STOP_CHECK, "tpb": jcr.DEFAULT_TPB}),    
+    jcr.jcr_pi_contraction_cuda_reducemax.__name__: (True, jcr.jcr_pi_contraction_cuda_reducemax, DEFAULT_REPETITIONS, {"lazy_stop_check": jcr.DEFAULT_LAZY_STOP_CHECK, "tpb": jcr.DEFAULT_TPB}),
+    jcr.jcr_pi_contraction_cuda_gridsync.__name__: (True, jcr.jcr_pi_contraction_cuda_gridsync, DEFAULT_REPETITIONS, {"tpb": jcr.DEFAULT_TPB})
+    }
+```
+
+**Important note**: due to the GitHub's file size limit, in the repository we explicitly store pickled files with $P$ distributions (4-D arrays of `float32` numbers) 
+only for $N=10, M=5$ and $N=10, M=10$ (inside folder `mdp_joint_distrs/`). To precompute and pickle distributions for larger settings, set `MAKE_JCR_MDP_JOINT_DISTR = True`. 
+For example, $N=20, M=5$ produce a file approx. of size 0.3 GiB, whereas $N=30, M=10$ a file approx. of size 4.4 GiB.
 
 
 # Acknowledgements
