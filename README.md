@@ -5,7 +5,7 @@ The repository constitutes a part of research on CUDA computational approaches f
 JCR, devised by Sutton and Barto (2020), is a classic problem of finding the optimal policy for 
 a fully known MDP (Markov Decision Process), i.e., given its joint-probability distribution.
 In this research, the *policy iteration* method has been applied, and the repository contains
-four CUDA implementations of policy iteration (and two referential CPU-based implementation) for the JCR problem.
+four CUDA implementations of policy iteration for the JCR problem (and two referential CPU-based implementations).
 
 <table>
   <tr>
