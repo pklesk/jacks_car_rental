@@ -1,6 +1,6 @@
 # CUDA-based policy iteration for Jack's Car Rental (JCR)
 The repository constitutes a part of research on CUDA computational approaches for algorithms based on 
-*contraction mapping theorem* due to Banach (a.k.a. the fixed-point theorem).
+*contraction mapping theorem* due to Banach, a.k.a. the fixed-point theorem.
 
 JCR, devised by Sutton and Barto (2020), is a classic problem of finding the optimal policy for 
 a fully known MDP (Markov Decision Process), i.e., given its joint-probability distribution.
