@@ -47,7 +47,9 @@ the problem size.
 
 In CUDA approaches, we assume that $P$ has been properly precomputed and placed in the device memory
 as a four-dimensional array `dev_P[:, :, :, :]`, and available to kernels. 
-The efficient order of indexes (for frequent coalesced reads) is `dev_P[s, a, r', s']`.
+The efficient order of indexes (for frequent coalesced reads) is `dev_P[s, a, r', s']`. 
+Two such arrays with distributions for small settings are available in the repository and can be read by the program
+from binary (pickled) files. Larger ones can be generated (see section [Configuration and larger settings](#configuration-and-larger-settings)).
 
 
 # Speed-ups
