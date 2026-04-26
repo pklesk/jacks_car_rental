@@ -21,6 +21,7 @@ Numba exposes a programming interface closely mirroring the native CUDA C++ API,
 into its internal representation (Numba IR), which is then lowered via the LLVM and NVVM-based pipeline into PTX and finally 
 JIT-compiled into executable machine code.
 
+
 # Problem statement and settings
 We consider several sizes of the JCR problem, but in its original setting (Sutton and Barto; 1998, 2020), JCR is defined as follows. 
 Jack manages two locations for a nationwide car rental company. 
@@ -43,6 +44,11 @@ action, incur a deterministic cost, which can be treated as a constant negative 
 and thus factored out from the joint distribution $P(r,s'|s,a)$. Hence, 
 the number of entries in the distribution $P$ is: $(2N+1)\cdot(N+1)^2\cdot(N+1)^2\cdot(2M + 1)$, and this number defines
 the problem size.
+
+In CUDA approaches, we assume that $P$ has been properly precomputed and placed in the device memory
+as a four-dimensional array $\code{dev\_P[:, :, :, :]}$, and available to kernels. 
+The efficient order of indexes (for frequent coalesced reads) is \code{dev\_P[$s$, $a$, $r'$, $s'$]}.
+
 
 # Speed-ups
 <img src="extras/jcr_speedups.png"/>
@@ -95,11 +101,14 @@ the problem size.
 | 35  | `jcr_pi_contraction_cuda_reducemax`             | 430          | 0.0 $\cdot$ 10<sup>-5</sup>          | 0.534         | $\times$ 163.7| 0.164        | $\times$ 533.1|
 | 36  | `jcr_pi_contraction_cuda_gridsync`              | 406          | 6.1 $\cdot$ 10<sup>-5</sup>          | 0.594         | $\times$ 147.2| 0.159        | $\times$ 549.8|
 
+
 # Usage for default settings
 TODO
 
+
 # Usage for larger settings
 TODO
+
 
 # Acknowledgements
 - [Numba](https://numba.pydata.org): a high-performance just-in-time Python compiler.
