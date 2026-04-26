@@ -102,8 +102,46 @@ The efficient order of indexes (for frequent coalesced reads) is `dev_P[s, a, r'
 | 36  | `jcr_pi_contraction_cuda_gridsync`              | 406          | 6.1 $\cdot$ 10<sup>-5</sup>          | 0.594         | $\times$ 147.2| 0.159        | $\times$ 549.8|
 
 
-# Usage for default settings
-TODO
+# Usage for default small settings
+By launching `python main.py` or `python3 main.py`, one executes 10 repetitions of policy iteration algorithm using all 6 approaches (two CPU-based and four GPU/CUDA-based)
+for the default small settings of $N=10$, $M=5$. This produces the following print-out (abbreviated here):
+```bash
+JACK'S CAR RENTAL STARTING...
+HASH STRING: 1321393540_15031_565_[1;10;5;10.0;-2.0;[3.0,4.0];[3.0,2.0];True;0.9;1.0e-04;1.0e-07;False;TTTTTT]
+=======================================================================================================================================
+EXPERIMENT INFO:
+{
+  SEED: 1,
+  JCR_MAX_CARS_AT_LOC: 10,
+  JCR_MAX_CARS_MOVED: 5,
+  JCR_REWARD_CAR_RENTED: 10.0,
+  JCR_REWARD_CAR_MOVED: -2.0,
+  JCR_REQUEST_POISSON_LAMBDAS_AT_LOC: [3.0, 4.0],
+  JCR_RETURN_POISSON_LAMBDAS_AT_LOC: [3.0, 2.0],
+  NUMPY_SINGLE_THREAD: True,
+  GAMMA: 0.9,
+  EPS: 0.0001,
+  TOLERANCE_V: 1e-07,
+  PLOTS: False,
+  jcr_pi_contraction_cpu_numpy: (True, 'jcr_pi_contraction_cpu_numpy', 10, {}),
+  jcr_pi_contraction_cpu_numba_parallel: (True, 'jcr_pi_contraction_cpu_numba_parallel', 10, {}),
+  jcr_pi_contraction_cuda_atomicmax: (True, 'jcr_pi_contraction_cuda_atomicmax', 10, {'lazy_stop_check': 5, 'tpb': 64}),
+  jcr_pi_contraction_cuda_atomicmaxplain: (True, 'jcr_pi_contraction_cuda_atomicmaxplain', 10, {'lazy_stop_check': 5, 'tpb': 64}),
+  jcr_pi_contraction_cuda_reducemax: (True, 'jcr_pi_contraction_cuda_reducemax', 10, {'lazy_stop_check': 5, 'tpb': 64}),
+  jcr_pi_contraction_cuda_gridsync: (True, 'jcr_pi_contraction_cuda_gridsync', 10, {'tpb': 64})
+}
+... [CPU and GPU properties displayed]
+... [log of computations]
+=======================================================================================================================================
+FINAL SUMMARY:
+PI CONTRACTION APPROACH 1: jcr_pi_contraction_cpu_numpy (REFERENCE) -> MEAN MAIN ITERS: 3.0, MEAN EVAL ITERS TOTAL: 326.0, MEAN D_INF: 6.103515625e-05, MEAN TIME: 1.8941062211990356 s, TIME STD: 0.008526707013049417 s, STD_%: 0.5%, SPEED-UP: 1.00
+PI CONTRACTION APPROACH 2: jcr_pi_contraction_cpu_numba_parallel -> MEAN MAIN ITERS: 3.0, MEAN EVAL ITERS TOTAL: 326.0, MEAN D_INF: 6.103515625e-05, MEAN TIME: 0.02811145782470703 s, TIME STD: 0.0007655269361700572 s, STD_%: 2.7%, SPEED-UP: 67.38
+PI CONTRACTION APPROACH 3: jcr_pi_contraction_cuda_atomicmax -> MEAN MAIN ITERS: 3.0, MEAN EVAL ITERS TOTAL: 325.0, MEAN D_INF: 6.103515625e-05, MEAN TIME: 0.028424882888793947 s, TIME STD: 0.00015002032090381248 s, STD_%: 0.5%, SPEED-UP: 66.64
+PI CONTRACTION APPROACH 4: jcr_pi_contraction_cuda_atomicmaxplain -> MEAN MAIN ITERS: 3.0, MEAN EVAL ITERS TOTAL: 325.0, MEAN D_INF: 6.103515625e-05, MEAN TIME: 0.028548169136047363 s, TIME STD: 0.0003154093629948836 s, STD_%: 1.1%, SPEED-UP: 66.35
+PI CONTRACTION APPROACH 5: jcr_pi_contraction_cuda_reducemax -> MEAN MAIN ITERS: 3.0, MEAN EVAL ITERS TOTAL: 325.0, MEAN D_INF: 6.103515625e-05, MEAN TIME: 0.022414541244506835 s, TIME STD: 0.0001515876950570095 s, STD_%: 0.7%, SPEED-UP: 84.50
+PI CONTRACTION APPROACH 6: jcr_pi_contraction_cuda_gridsync -> MEAN MAIN ITERS: 3.0, MEAN EVAL ITERS TOTAL: 321.0, MEAN D_INF: 6.103515625e-05, MEAN TIME: 0.007318687438964844 s, TIME STD: 5.802755572372158e-05 s, STD_%: 0.8%, SPEED-UP: 258.80
+JACK'S CAR RENTAL DONE. [hash string: 1321393540_15031_565_[1;10;5;10.0;-2.0;[3.0,4.0];[3.0,2.0];True;0.9;1.0e-04;1.0e-07;False;TTTTTT], time: 20.365321397781372 s]
+```
 
 
 # Usage for larger settings
