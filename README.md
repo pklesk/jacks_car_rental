@@ -102,7 +102,7 @@ The efficient order of indexes (for frequent coalesced reads) is `dev_P[s, a, r'
 | 36  | `jcr_pi_contraction_cuda_gridsync`              | 406          | 6.1 $\cdot$ 10<sup>-5</sup>          | 0.594         | $\times$ 147.2| 0.159        | $\times$ 549.8|
 
 
-# Usage for small settings
+# Basic usage (small settings)
 By launching `python main.py` or `python3 main.py`, one executes 10 repetitions of policy iteration algorithm using all 6 approaches (two CPU-based and four GPU/CUDA-based)
 for the program's default small settings of $N=10$, $M=5$. This produces the following print-out (abbreviated here):
 ```bash
@@ -144,7 +144,7 @@ JACK'S CAR RENTAL DONE. [hash string: 1321393540_15031_565_[1;10;5;10.0;-2.0;[3.
 ```
 
 
-# Usage for other (larger) settings
+# Configuration and larger settings
 For executions on other settings, one can re-edit the global settings in `src/jcr.py`:
 ```python
 # global settings
