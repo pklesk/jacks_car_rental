@@ -57,7 +57,7 @@ from binary (pickled) files. Larger ones can be generated (see section [Configur
 
 
 # Selected experimental results (averages over 10 repetitions)
-| no. | approach (design)                               | eval. iters. | d_inf <br/> (eps: 10<sup>-4</sup>)   | mean time [s] | Speed-ups    | mean time [s] | speed-ups    |
+| no. | approach (design)                               | eval. iters. | d_inf <br/> (eps: 10<sup>-4</sup>)   | mean time [s] | speed-up     | mean time [s] | speed-up    |
 |:----|:------------------------------------------------|:------------:|:------------------------------------:|--------------:|-------------:|--------------:|-------------:|
 |     |                                                 |              |                                      | **(RTX 3090)**| **(RTX 3090)**| **(RTX 5090)**| **(RTX 5090)**|
 |     | **problem size: ~3.4 $\cdot$ 10<sup>6</sup>** <br/> ($N$=10, $M$=5; shape: 121 $\times$ 11 $\times$ 21 $\times$ 121, entries: 3 382 071)      |||||||
