@@ -58,8 +58,8 @@ from binary (pickled) files. Larger ones can be generated (see section [Configur
 
 # Selected experimental results (averages over 10 repetitions)
 | no. | approach (design)                               | eval. iters. | d_inf <br/> (eps: 10<sup>-4</sup>)   | mean time [s] | speed-up     | mean time [s] | speed-up    |
-|:----|:------------------------------------------------|:------------:|:------------------------------------:|--------------:|-------------:|--------------:|-------------:|
-|     |                                                 |              |                                      | **(RTX 3090)**| **(RTX 3090)**| **(RTX 5090)**| **(RTX 5090)**|
+|:----|:------------------------------------------------|:------------:|:------------------------------------:|--------------:|-------------:|--------------:|------------:|
+|     ||||**RTX 3090**<br/>**(i7-10700 8c/16t)**|**RTX 3090**<br/>**(i7-10700 8c/16t)**|**RTX 5090**<br/>**(Ryzen 9 9950X 16c/32t)**|**RTX 5090**<br/>**(Ryzen 9 9950X 16c/32t)**|
 |     | **problem size: ~3.4 $\cdot$ 10<sup>6</sup>** <br/> ($N$=10, $M$=5; shape: 121 $\times$ 11 $\times$ 21 $\times$ 121, entries: 3 382 071)      |||||||
 | 1   | `jcr_pi_contraction_cpu_numpy`                  | 326          | 6.1 $\cdot$ 10<sup>-5</sup>          | 1.894         | $\times$ 1.0 | 1.054         | $\times$ 1.8 |
 | 2   | `jcr_pi_contraction_cpu_numba_parallel`         | 326          | 6.1 $\cdot$ 10<sup>-5</sup>          | 0.028         | $\times$ 67.6| 0.009         | $\times$ 210.4|
