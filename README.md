@@ -56,7 +56,7 @@ from binary (pickled) files. Larger ones can be generated (see section [Configur
 <img src="extras/jcr_speedups.png"/>
 
 
-# Selected experimental results (averages over 10 repetitions)
+## Selected experimental results (averages over 10 repetitions)
 | no. | approach (design)                               | eval. iters. | d_inf <br/> (eps: 10<sup>-4</sup>)   | mean time [s] | speed-up     | mean time [s] | speed-up    |
 |:----|:------------------------------------------------|:------------:|:------------------------------------:|--------------:|-------------:|--------------:|------------:|
 |     ||||**RTX 3090**<br/>**(i7-10700 8c/16t)**|**RTX 3090**<br/>**(i7-10700 8c/16t)**|**RTX 5090**<br/>**(Ryzen 9 9950X 16c/32t)**|**RTX 5090**<br/>**(Ryzen 9 9950X 16c/32t)**|
