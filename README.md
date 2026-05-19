@@ -22,7 +22,7 @@ into its internal representation (Numba IR), which is then lowered via the LLVM 
 JIT-compiled into executable machine code.
 
 
-# Problem statement and settings
+## Problem statement and settings
 We consider several sizes of the JCR problem, but in its original setting (Sutton and Barto; 1998, 2020), JCR is defined as follows. 
 Jack manages two locations for a nationwide car rental company. 
 Each day, the number of clients requesting cars at each location and the number of cars returned follow Poisson distributions 
@@ -52,7 +52,7 @@ Two such arrays with distributions for small settings are available in the repos
 from binary (pickled) files. Larger ones can be generated (see section [Configuration and larger settings](#configuration-and-larger-settings)).
 
 
-# Speed-ups
+## Speed-ups
 <img src="extras/jcr_speedups.png"/>
 
 
@@ -104,7 +104,7 @@ from binary (pickled) files. Larger ones can be generated (see section [Configur
 | 36  | `jcr_pi_contraction_cuda_gridsync`              | 406          | 6.1 $\cdot$ 10<sup>-5</sup>          | 0.594         | $\times$ 147.2| 0.159        | $\times$ 549.8|
 
 
-# Basic usage (small settings)
+## Basic usage (small settings)
 By launching `python main.py` or `python3 main.py`, one executes 10 repetitions of policy iteration algorithm using all 6 approaches (two CPU-based and four GPU/CUDA-based)
 for the program's default small settings of $N=10$, $M=5$. This produces the following print-out (abbreviated here):
 ```bash
@@ -146,7 +146,7 @@ JACK'S CAR RENTAL DONE. [hash string: 1321393540_15031_565_[1;10;5;10.0;-2.0;[3.
 ```
 
 
-# Configuration and larger settings
+## Configuration and larger settings
 For executions on other settings, one can re-edit the global settings in `src/jcr.py`:
 ```python
 # global settings
@@ -183,7 +183,7 @@ only for $N=10, M=5$ and $N=10, M=10$ (inside folder `mdp_joint_distrs/`). To pr
 For example, $N=20, M=5$ produce a file approx. of size 0.3 GiB, whereas $N=30, M=10$ a file approx. of size 4.4 GiB.
 
 
-# Acknowledgements
+## Acknowledgements
 - [Numba](https://numba.pydata.org): a high-performance just-in-time Python compiler.
 - Richard S. Sutton and Andrew G. Barto. 1998. *Reinforcement Learning: An Introduction*. MIT Press, Cambridge, MA, USA.
 - Richard S. Sutton and Andrew G. Barto. 2020. *Reinforcement Learning: An Introduction* (2nd ed.). MIT Press, Cambridge, MA, USA.
