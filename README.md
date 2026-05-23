@@ -165,7 +165,7 @@ SEED = 1
 GAMMA = 0.9
 EPS = 1e-4
 TOLERANCE_V = 1e-7
-PLOTS = True
+PLOTS = False
 
 APPROACHES_PI_CONTRACTION = { # approaches for contraction iteration (policy iteration)
     jcr.jcr_pi_contraction_cpu_numpy.__name__: (True, jcr.jcr_pi_contraction_cpu_numpy, DEFAULT_REPETITIONS, {}),
