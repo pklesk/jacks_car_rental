@@ -211,7 +211,7 @@ def jcr_pi_contraction_cpu_numba_parallel(policy_in, V_in, P,
     t2 = time.time()
     if verbose:
         print(f"JCR PI CONTRACTION CPU NUMBA PARALLEL DONE. [d_inf: {str(d)}, main iterations: {k_main}, evaluation iterations total: {k_eval_total[0]}, time: {t2 - t1} s]")
-    return policy_out, V_out, d, k_main, k_eval_total, t2 - t1, history_for_plots
+    return policy_out, V_out, d[0], k_main, k_eval_total, t2 - t1, history_for_plots
 
 @jit(void(float32[:,:,:,:], float32[:], int16[:], int16[:, :], int16[:], float32[:], float32, float32, float32, float32[:], float32[:], int32[:], boolean), nopython=True, parallel=True, cache=True)
 def jcr_pi_cpu_numba_parallel_eval(P, V_src, policy, states, actions, rewards_rental, reward_car_moved, gamma, eps, V_dst, d, k_eval_total, verbose_iters):
